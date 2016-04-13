@@ -16,13 +16,13 @@
  *
  */
 
-package com.destin.moeviewer.model;
+package com.destin.moeviewer.model.common;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Yander {
+public class Post {
 
     /**
      * id : 351739
@@ -411,4 +411,6 @@ public class Yander {
     public void setFrames(List<?> frames) {
         this.frames = frames;
     }
+
+
 }

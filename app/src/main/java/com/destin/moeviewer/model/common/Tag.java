@@ -16,7 +16,7 @@
  *
  */
 
-package com.destin.moeviewer.model;
+package com.destin.moeviewer.model.common;
 
 public class Tag {
 
