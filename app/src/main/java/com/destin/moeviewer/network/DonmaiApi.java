@@ -21,6 +21,8 @@ package com.destin.moeviewer.network;
 import com.destin.moeviewer.model.donmai.DonmaiArtist;
 import com.destin.moeviewer.model.donmai.DonmaiComment;
 import com.destin.moeviewer.model.donmai.DonmaiPost;
+import com.destin.moeviewer.model.donmai.DonmaiTag;
+import com.destin.moeviewer.model.donmai.DonmaiWiki;
 
 import java.util.List;
 
@@ -97,4 +99,45 @@ public interface DonmaiApi {
             @Query("name") String name, @Query("id") int id, @Query("creator_name") String creatorName,
             @Query("creator_id") int creatorId, @Query("is_active") boolean isActive, @Query("is_banned") boolean isBanned,
             @Query("empty_only") boolean emptyOnly, @Query("order") String order);
+
+
+    /*
+    * Tags
+    */
+
+    /**
+     * @param name_matches
+     * @param category     Can be: 0, 1, 3, 4 (general, artist, copyright, character respectively)
+     * @param hide_empty   Can be: yes, no. Excludes tags with 0 posts when "yes".
+     * @param order        Can be: name, date, count
+     * @param has_wiki     Can be: yes, no
+     * @param name         Allows searching for multiple tags with exact given names, separated by commas.
+     *                     e.g. search[name]=touhou,original,k-on! would return the three listed tags.
+     * @return list of tags
+     */
+    @GET("tags.json")
+    Observable<List<DonmaiTag>> listTags(
+            @Query("search[name_matches]") String name_matches, @Query("search[category]") int category,
+            @Query("search[hide_empty]") String hide_empty, @Query("search[order]") String order,
+            @Query("search[has_wiki]") String has_wiki, @Query("search[name]") String name);
+
+
+    /*
+    * Wiki
+    */
+
+    /**
+     * @param title
+     * @param creator_id
+     * @param body_matches
+     * @param other_names_match
+     * @param creator_name
+     * @param order             Can be: date, title.
+     * @return list of wiki pages
+     */
+    @GET("wiki_pages.json")
+    Observable<List<DonmaiWiki>> listWiki(
+            @Query("search[title]") String title, @Query("search[creator_id]") int creator_id,
+            @Query("search[body_matches]") String body_matches, @Query("search[other_names_match]") String other_names_match,
+            @Query("search[creator_name]") String creator_name, @Query("search[order]") String order);
 }
