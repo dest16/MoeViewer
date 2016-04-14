@@ -31,7 +31,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 /**
- * api of below
+ * api of
  * https://yande.re/
  * http://konachan.com/
  */

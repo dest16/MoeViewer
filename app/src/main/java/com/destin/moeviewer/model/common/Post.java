@@ -121,8 +121,8 @@ public class Post {
     @SerializedName("frames_string")
     private String framesString;
     @SerializedName("frames_pending")
-    private List<?> framesPending;
-    private List<?> frames;
+    private List<String> framesPending;
+    private List<String> frames;
 
     public int getId() {
         return id;
@@ -396,19 +396,19 @@ public class Post {
         this.framesString = framesString;
     }
 
-    public List<?> getFramesPending() {
+    public List<String> getFramesPending() {
         return framesPending;
     }
 
-    public void setFramesPending(List<?> framesPending) {
+    public void setFramesPending(List<String> framesPending) {
         this.framesPending = framesPending;
     }
 
-    public List<?> getFrames() {
+    public List<String> getFrames() {
         return frames;
     }
 
-    public void setFrames(List<?> frames) {
+    public void setFrames(List<String> frames) {
         this.frames = frames;
     }
 

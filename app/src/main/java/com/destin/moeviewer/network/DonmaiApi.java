@@ -31,7 +31,13 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+/**
+ * api of
+ * http://danbooru.donmai.us/
+ */
 public interface DonmaiApi {
+
+
 //    200 OK: Request was successful
 //    204 No Content: Request was successful
 //    403 Forbidden: Access denied
