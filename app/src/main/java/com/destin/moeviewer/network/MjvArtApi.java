@@ -19,10 +19,13 @@
 package com.destin.moeviewer.network;
 
 import com.destin.moeviewer.model.mjvart.MjvArtPost;
+import com.destin.moeviewer.model.mjvart.MjvArtTag;
 
 import java.util.List;
 
+import retrofit2.http.Field;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -52,6 +55,11 @@ public interface MjvArtApi {
             @Query("denied_tags") String deniedTags, @Query("order_by") String orderBy, @Query("ldate") int ldate,
             @Query("ext_jpg") String extJpg, @Query("ext_png") String extPng, @Query("ext_gif") String extGif);
 
-
+    /**
+     * @param tag tags contained (length should be at least 2)
+     * @return list of tags
+     */
+    @POST("pictures/autocomplete_tag")
+    Observable<List<MjvArtTag>> autoTags(@Field("tag") String tag);
 
 }

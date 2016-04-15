@@ -46,11 +46,20 @@ public interface ShuushuuApi {
      * @param favorite
      * @param source
      * @param tag
+     * @param maxId     only show images with id lower than this value
      * @return list of post
      */
     @GET("app/search/process.php")
     Observable<List<ShuushuuPost>> search(
             @Query("artist") String artist, @Query("char") String character, @Query("fav") String favorite,
-            @Query("source") String source, @Query("tags") String tag);
+            @Query("source") String source, @Query("tags") String tag, @Query("max_image_id") int maxId);
 
+
+    /**
+     * @param type search type.can be 1,2,3(tags,source,artist)
+     * @param tag  tags part of this
+     * @return tags string like : "sad" "sake" "sakura" "samurai" "sandals" "sarashi" (not json)
+     */
+    @GET("httpreq.php?mode=tag_search")
+    Observable<String> autoTags(@Query("type") int type, @Query("tags") String tag);
 }

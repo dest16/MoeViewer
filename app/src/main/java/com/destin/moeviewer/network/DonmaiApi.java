@@ -112,38 +112,44 @@ public interface DonmaiApi {
     */
 
     /**
-     * @param name_matches
+     * @param nameMatches
      * @param category     Can be: 0, 1, 3, 4 (general, artist, copyright, character respectively)
-     * @param hide_empty   Can be: yes, no. Excludes tags with 0 posts when "yes".
+     * @param hideEmpty   Can be: yes, no. Excludes tags with 0 posts when "yes".
      * @param order        Can be: name, date, count
-     * @param has_wiki     Can be: yes, no
+     * @param hasWiki     Can be: yes, no
      * @param name         Allows searching for multiple tags with exact given names, separated by commas.
      *                     e.g. search[name]=touhou,original,k-on! would return the three listed tags.
      * @return list of tags
      */
     @GET("tags.json")
     Observable<List<DonmaiTag>> listTags(
-            @Query("search[name_matches]") String name_matches, @Query("search[category]") int category,
-            @Query("search[hide_empty]") String hide_empty, @Query("search[order]") String order,
-            @Query("search[has_wiki]") String has_wiki, @Query("search[name]") String name);
+            @Query("search[nameMatches]") String nameMatches, @Query("search[category]") int category,
+            @Query("search[hideEmpty]") String hideEmpty, @Query("search[order]") String order,
+            @Query("search[hasWiki]") String hasWiki, @Query("search[name]") String name);
 
 
+    /**
+     * @param nameMatches tag should end with *
+     * @return list of tag (without date)
+     */
+    @GET("tags/autocomplete.json")
+    Observable<List<DonmaiTag>> autoTags(@Query("search[name_matches]") String nameMatches);
     /*
     * Wiki
     */
 
     /**
      * @param title
-     * @param creator_id
+     * @param creatorId
      * @param body_matches
      * @param other_names_match
-     * @param creator_name
+     * @param creatorName
      * @param order             Can be: date, title.
      * @return list of wiki pages
      */
     @GET("wiki_pages.json")
     Observable<List<DonmaiWiki>> listWiki(
-            @Query("search[title]") String title, @Query("search[creator_id]") int creator_id,
+            @Query("search[title]") String title, @Query("search[creatorId]") int creatorId,
             @Query("search[body_matches]") String body_matches, @Query("search[other_names_match]") String other_names_match,
-            @Query("search[creator_name]") String creator_name, @Query("search[order]") String order);
+            @Query("search[creatorName]") String creatorName, @Query("search[order]") String order);
 }
