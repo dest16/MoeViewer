@@ -51,7 +51,7 @@ public interface ZeroChanApi {
     Observable<String> autoTags(@Query("q") String q);
 
     /**
-     * @param tag tag should be integral ,can fill with the return of {@link #autoTags(String)}
+     * @param tag tag should be integral with the {@link #autoTags(String)}
      * @param p   the page number (start with 1)
      * @return raw html
      */
