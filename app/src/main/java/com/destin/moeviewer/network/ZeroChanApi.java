@@ -38,6 +38,14 @@ public interface ZeroChanApi {
     @GET
     Observable<String> listPosts(@Query("s") String s, @Query("p") int p);
 
+    /**
+     * @param tag can be:Meta Tags,the children of Meta Tags
+     * @param s   order,can be tag,count(name,popular)
+     * @param p   page number,start with 1(48 per page)
+     * @return raw html
+     */
+    @GET("{tag}")
+    Observable<String> listTags(@Path("tag") String tag, @Query("s") String s, @Query("p") int p);
 
     /**
      * @param q tag
@@ -51,10 +59,10 @@ public interface ZeroChanApi {
     Observable<String> autoTags(@Query("q") String q);
 
     /**
-     * @param tag tag should be integral ,can fill with the return of {@link #autoTags(String)}
+     * @param tag tag should be integral ,equal the return of {@link #autoTags(String)}
      * @param p   the page number (start with 1)
      * @return raw html
      */
     @GET("{tag}")
-    Observable<String> search(@Path("tag") String tag, @Query("p") int p);
+    Observable<String> showPosts(@Path("tag") String tag, @Query("p") int p);
 }
