@@ -21,21 +21,36 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import"/>
+            android:id="@+id/nav_yande"
+            android:icon="@mipmap/ic_yande"
+            android:title="@string/yande_menu_title"/>
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery"/>
+            android:id="@+id/nav_konachan"
+            android:icon="@mipmap/ic_konachan"
+            android:title="@string/konachan_menu_title"/>
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow"/>
+            android:id="@+id/nav_donmai"
+            android:icon="@mipmap/ic_donmai"
+            android:title="@string/donmai_menu_title"/>
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools"/>
+            android:id="@+id/nav_safebooru"
+            android:icon="@mipmap/ic_safebooru"
+            android:title="@string/safebooru_menu_title"/>
+        <!--<item-->
+        <!--android:id="@+id/nav_gelbooru"-->
+        <!--android:title="@string/gelbooru_menu_title"/>-->
+        <item
+            android:id="@+id/nav_shuushuu"
+            android:icon="@mipmap/ic_shushu"
+            android:title="@string/shuushuu_menu_title"/>
+        <item
+            android:id="@+id/nav_zerochan"
+            android:icon="@mipmap/ic_zerochan"
+            android:title="@string/zerochan_menu_title"/>
+        <item
+            android:id="@+id/nav_monitokyo"
+            android:icon="@mipmap/ic_minitokyo"
+            android:title="@string/minitokyo_menu_title"/>
     </group>
 
     <item android:title="Communicate">

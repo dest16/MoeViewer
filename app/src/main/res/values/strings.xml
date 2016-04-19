@@ -4,5 +4,14 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="search">search</string>
+    <string name="yande_menu_title">yande.re</string>
+    <string name="konachan_menu_title">konachan.com</string>
+    <string name="donmai_menu_title">danbooru.donmai.us</string>
+    <string name="safebooru_menu_title">safebooru.org</string>
+    <string name="gelbooru_menu_title">gelbooru.com</string>
+    <string name="shuushuu_menu_title">e-shuushuu.net</string>
+    <string name="zerochan_menu_title">e-shuushuu.net</string>
+    <string name="minitokyo_menu_title">minitokyo.net</string>
+
 </resources>
