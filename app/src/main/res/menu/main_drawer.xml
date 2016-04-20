@@ -22,6 +22,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_yande"
+            android:checked="true"
             android:icon="@mipmap/ic_yande"
             android:title="@string/yande_menu_title"/>
         <item

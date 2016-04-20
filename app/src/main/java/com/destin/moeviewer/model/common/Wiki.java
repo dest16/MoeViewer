@@ -20,8 +20,6 @@ package com.destin.moeviewer.model.common;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
-
 public class Wiki {
     /**
      * id : 344
@@ -29,11 +27,11 @@ public class Wiki {
      * updated_at : 2009-09-28T23:35:09.732Z
      * title : &love
      * body : ＆LOVE（アンドラブ）
-     Art by [[yuyi|Yuyi]].
-
-     <<http://www.comet-web.com/products/andlove/index|Official Site>>
-     <<http://erogamescape.ddo.jp/~ap2/ero/toukei_kaiseki/game.php?game=12440#ad|Erogamescape>>
-     <<http://www.getchu.com/soft.phtml?id=634965|Getchu>>
+     * Art by [[yuyi|Yuyi]].
+     * <p/>
+     * <<http://www.comet-web.com/products/andlove/index|Official Site>>
+     * <<http://erogamescape.ddo.jp/~ap2/ero/toukei_kaiseki/game.php?game=12440#ad|Erogamescape>>
+     * <<http://www.getchu.com/soft.phtml?id=634965|Getchu>>
      * updater_id : 22887
      * locked : false
      * version : 4
@@ -43,7 +41,7 @@ public class Wiki {
     @SerializedName("created_at")
     private String createdAt;
     @SerializedName("updated_at")
-    private Date updatedAt;
+    private String updatedAt;
     private String title;
     private String body;
     @SerializedName("updater_id")
@@ -67,11 +65,11 @@ public class Wiki {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public String getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
 
