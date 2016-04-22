@@ -32,10 +32,9 @@
     <!--android:layout_height="wrap_content"-->
     <!--android:theme="@style/AppTheme.AppBarOverlay">-->
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -45,11 +44,19 @@
             android:theme="@style/AppTheme.AppBarOverlay"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_below="@id/toolbar"
+            android:background="@drawable/shadow_bottom"/>
+
         <com.destin.moeviewer.widget.MaterialSearchView
             android:id="@+id/search_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-    </FrameLayout>
+
+
+    </RelativeLayout>
     <!--</android.support.design.widget.AppBarLayout>-->
 
 

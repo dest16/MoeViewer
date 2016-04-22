@@ -35,6 +35,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -153,7 +154,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     }
 
     private void initiateView() {
-        LayoutInflater.from(mContext).inflate(R.layout.search_view, this, true);
+        LayoutInflater.from(mContext).inflate(R.layout.widget_search_view, this, true);
         mSearchLayout = findViewById(R.id.search_layout);
 
         mSearchTopBar = (RelativeLayout) mSearchLayout.findViewById(R.id.search_top_bar);
@@ -539,37 +540,13 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     }
 
     private void setVisibleWithAnimation() {
-//        AnimationUtil.AnimationListener animationListener = new AnimationUtil.AnimationListener() {
-//            @Override
-//            public boolean onAnimationStart(View view) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onAnimationEnd(View view) {
-//                if (mSearchViewListener != null) {
-//                    mSearchViewListener.onSearchViewShown();
-//                }
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onAnimationCancel(View view) {
-//                return false;
-//            }
-//        };
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            mSearchLayout.setVisibility(View.VISIBLE);
-//            AnimationUtil.reveal(mSearchTopBar, animationListener);
-//
-//        } else {
-//            AnimationUtil.fadeInView(mSearchLayout, mAnimationDuration, animationListener);
-//        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mSearchLayout.setVisibility(View.VISIBLE);
-            AnimationUtils.revealOut(mSearchTopBar, new AnimatorListenerAdapter() {
+            int cx = mSearchTopBar.getWidth() - (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 24, mSearchTopBar.getResources().getDisplayMetrics());
+            int cy = mSearchTopBar.getHeight() / 2;
+            AnimationUtils.reveal(mSearchTopBar, cx, cy, 0, Math.max(mSearchTopBar.getWidth()
+                    , mSearchTopBar.getHeight()), new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     if (mSearchViewListener != null) {
@@ -579,13 +556,20 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
             });
         } else {
             mSearchLayout.setVisibility(View.VISIBLE);
+            if (mSearchViewListener != null) {
+                mSearchViewListener.onSearchViewShown();
+            }
         }
+    }
+
+    public void closeSearch() {
+        closeSearch(true);
     }
 
     /**
      * Close search view.
      */
-    public void closeSearch() {
+    public void closeSearch(boolean animate) {
         if (!isSearchOpen()) {
             return;
         }
@@ -593,13 +577,40 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
         mSearchSrcTextView.setText(null);
         dismissSuggestions();
         clearFocus();
+        if (animate) {
+            setGoneWithAnimation();
+        } else {
+            mSearchLayout.setVisibility(GONE);
+            if (mSearchViewListener != null) {
+                mSearchViewListener.onSearchViewClosed();
+            }
 
-        mSearchLayout.setVisibility(GONE);
-        if (mSearchViewListener != null) {
-            mSearchViewListener.onSearchViewClosed();
         }
         mIsSearchOpen = false;
 
+    }
+
+    private void setGoneWithAnimation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int cx = mSearchTopBar.getWidth() - (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 24, mSearchTopBar.getResources().getDisplayMetrics());
+            int cy = mSearchTopBar.getHeight() / 2;
+            AnimationUtils.reveal(mSearchTopBar, cx, cy, Math.max(mSearchTopBar.getWidth()
+                    , mSearchTopBar.getHeight()), 0, new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mSearchLayout.setVisibility(View.GONE);
+                    if (mSearchViewListener != null) {
+                        mSearchViewListener.onSearchViewShown();
+                    }
+                }
+            });
+        } else {
+            mSearchLayout.setVisibility(View.GONE);
+            if (mSearchViewListener != null) {
+                mSearchViewListener.onSearchViewClosed();
+            }
+        }
     }
 
     /**

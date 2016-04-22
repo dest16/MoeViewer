@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#0097a7</color>
     <color name="colorAccent">#FF4081</color>
     <color name="search_layover_bg">#50000000</color>
+    <color name="colorShadow">#38000000</color>
+    <color name="red_500">#e51c23</color>
+    <color name="green_500">#259b24</color>
+    <color name="yellow_500">#ffeb3b</color>
+    <color name="blue_500">#5677fc</color>
 </resources>
