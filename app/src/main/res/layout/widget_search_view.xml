@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016 dest16
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +14,7 @@
   ~ limitations under the License.
   -->
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/search_layout"
     android:layout_width="match_parent"
@@ -28,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/search_layover_bg"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,7 +39,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/white">
 
-            <EditText
+            <view class="com.destin.moeviewer.widget.MaterialSearchView$SearchEditText"
                 android:id="@+id/searchTextView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -54,13 +52,13 @@
                 android:singleLine="true"
                 android:textColor="#212121"
                 android:textColorHint="#727272"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <ImageButton
                 android:id="@+id/action_up_btn"
                 style="@style/MSV_ImageButton"
                 android:layout_centerVertical="true"
-                app:srcCompat="@drawable/ic_search_back"/>
+                app:srcCompat="@drawable/ic_search_back" />
 
 
             <ImageButton
@@ -69,14 +67,14 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:visibility="gone"
-                app:srcCompat="@drawable/ic_search_close"/>
+                app:srcCompat="@drawable/ic_search_close" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dip"
                 android:layout_alignParentBottom="true"
                 android:background="#fff"
-                android:backgroundTint="#10000000"/>
+                android:backgroundTint="#10000000" />
         </RelativeLayout>
 
 
@@ -85,6 +83,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:divider="@android:color/transparent"/>
+            android:divider="@android:color/transparent" />
     </LinearLayout>
 </FrameLayout>

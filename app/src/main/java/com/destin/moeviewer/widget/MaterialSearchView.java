@@ -30,6 +30,7 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.speech.RecognizerIntent;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -42,7 +43,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.FrameLayout;
@@ -64,6 +64,7 @@ import java.util.List;
 public class MaterialSearchView extends FrameLayout implements Filter.FilterListener {
     public static final int REQUEST_VOICE = 9999;
 
+    private final static String TAG = "MaterialSearchView";
     private boolean mIsSearchOpen = false;
     private int mAnimationDuration;
     private boolean mClearingFocus;
@@ -72,7 +73,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     private View mSearchLayout;
     private View mTintView;
     private ListView mSuggestionsListView;
-    private EditText mSearchSrcTextView;
+    private SearchEditText mSearchSrcTextView;
     private ImageButton mBackBtn;
     private ImageButton mEmptyBtn;
     private RelativeLayout mSearchTopBar;
@@ -159,7 +160,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
 
         mSearchTopBar = (RelativeLayout) mSearchLayout.findViewById(R.id.search_top_bar);
         mSuggestionsListView = (ListView) mSearchLayout.findViewById(R.id.suggestion_list);
-        mSearchSrcTextView = (EditText) mSearchLayout.findViewById(R.id.searchTextView);
+        mSearchSrcTextView = (SearchEditText) mSearchLayout.findViewById(R.id.searchTextView);
         mBackBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_up_btn);
         mEmptyBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_empty_btn);
         mTintView = mSearchLayout.findViewById(R.id.transparent_view);
@@ -176,6 +177,8 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     }
 
     private void initSearchView() {
+        mSearchSrcTextView.setSearchView(this);
+
         mSearchSrcTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -758,6 +761,38 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
         void onSearchViewShown();
 
         void onSearchViewClosed();
+    }
+
+    public static class SearchEditText extends AppCompatEditText {
+        private MaterialSearchView mSearchView;
+
+        public SearchEditText(Context context) {
+            super(context);
+        }
+
+        public SearchEditText(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        public SearchEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+        }
+
+        void setSearchView(MaterialSearchView searchView) {
+            mSearchView = searchView;
+        }
+
+        @Override
+        public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+                Log.d(TAG, "onKeyPreIme : " + keyCode);
+                mSearchView.closeSearch();
+                return true;
+            }
+            return super.onKeyPreIme(keyCode, event);
+
+        }
     }
 
 
