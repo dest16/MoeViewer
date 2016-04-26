@@ -34,4 +34,5 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.0.1'
     compile 'org.jsoup:jsoup:1.8.3'
     compile 'com.github.seven332:refreshlayout:0.1.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }

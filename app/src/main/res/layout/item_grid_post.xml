@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016 dest16
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +13,21 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<com.destin.moeviewer.widget.StaggeredImageView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:scaleType="fitXY"
-    >
+    android:layout_height="wrap_content">
 
-</com.destin.moeviewer.widget.StaggeredImageView>
+    <com.destin.moeviewer.widget.StaggeredImageView
+        android:id="@+id/image_item_grid"
+        android:layout_width="match_parent"
+        android:scaleType="fitXY"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/desc_item_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:lines="1"
+        android:textSize="12sp" />
+</FrameLayout>

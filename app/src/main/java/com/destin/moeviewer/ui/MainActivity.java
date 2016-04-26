@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         int barSize = ResourceUtils.getAttrValue(this, android.R.attr.actionBarSize);
         mRefreshLayout.setHeaderTranslationY(barSize);
 
-        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setClipToPadding(false);
         int padding = LayoutUtils.dp2pix(this, 4);
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity
                 .baseUrl("http://konachan.com/")
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create()).build();
-        retrofit.create(MoeApi.class).listPosts(20, 0, "saber").subscribeOn(Schedulers.io())
+        retrofit.create(MoeApi.class).listPosts(20, 0, "loli").subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Post>>() {
             @Override
             public void onCompleted() {
