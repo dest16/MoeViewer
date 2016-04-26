@@ -25,14 +25,22 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-    <include layout="@layout/content_main"/>
+    <com.hippo.refreshlayout.RefreshLayout
+        android:id="@+id/refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <!--<android.support.design.widget.AppBarLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:theme="@style/AppTheme.AppBarOverlay">-->
+        <com.hippo.easyrecyclerview.EasyRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/recycler_view_padding"/>
+    </com.hippo.refreshlayout.RefreshLayout>
+
 
     <RelativeLayout
+        android:id="@+id/search_view_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -41,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            android:elevation="0dp"
             android:theme="@style/AppTheme.AppBarOverlay"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
@@ -57,7 +66,6 @@
 
 
     </RelativeLayout>
-    <!--</android.support.design.widget.AppBarLayout>-->
 
 
 </android.support.design.widget.CoordinatorLayout>

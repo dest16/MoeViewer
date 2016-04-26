@@ -24,16 +24,42 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.destin.moeviewer.R;
+import com.destin.moeviewer.adapter.PostAdapter;
+import com.destin.moeviewer.model.common.Post;
+import com.destin.moeviewer.network.LogInterceptor;
+import com.destin.moeviewer.network.MoeApi;
 import com.destin.moeviewer.widget.MaterialSearchView;
+import com.destin.sehaikun.AssertUtils;
+import com.destin.sehaikun.LayoutUtils;
+import com.destin.sehaikun.ResourceUtils;
+import com.hippo.easyrecyclerview.EasyRecyclerView;
+import com.hippo.easyrecyclerview.MarginItemDecoration;
+import com.hippo.refreshlayout.RefreshLayout;
+
+import java.util.List;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private DrawerLayout mDrawerLayout;
     private MaterialSearchView mSearchView;
+    private RefreshLayout mRefreshLayout;
+    private EasyRecyclerView mRecyclerView;
+    private PostAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,40 +67,72 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        AssertUtils.assertNull(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setBackgroundResource(R.color.background_material_light);
         navigationView.setItemIconTintList(null);
 
         mSearchView = (MaterialSearchView) findViewById(R.id.search_view);
-        mSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+        mRefreshLayout = (RefreshLayout) findViewById(R.id.refresh_layout);
+        mRecyclerView = (EasyRecyclerView) findViewById(R.id.recycler_view);
+
+        mRefreshLayout.setHeaderColorSchemeResources(R.color.red_500, R.color.yellow_500, R.color.blue_500, R.color.green_500);
+        mRefreshLayout.setFooterColorSchemeResources(R.color.green_500, R.color.blue_500, R.color.yellow_500, R.color.red_500);
+        int barSize = ResourceUtils.getAttrValue(this, android.R.attr.actionBarSize);
+        mRefreshLayout.setHeaderTranslationY(barSize);
+
+        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(manager);
+        mRecyclerView.setClipToPadding(false);
+        int padding = LayoutUtils.dp2pix(this, 4);
+        mRecyclerView.addItemDecoration(new MarginItemDecoration(padding, padding, padding, padding, padding));
+        mRecyclerView.setPadding(padding
+                , padding + barSize, padding
+                , padding);
+        mRecyclerView.setDrawSelectorOnTop(true);
+        mAdapter = new PostAdapter();
+        mRecyclerView.setAdapter(mAdapter);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(new LogInterceptor()).build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(okHttpClient)
+                .baseUrl("http://konachan.com/")
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        retrofit.create(MoeApi.class).listPosts(20, 0, "saber").subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List<Post>>() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
+            public void onCompleted() {
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.startsWith("a")) {
-                    mSearchView.setSuggestions(new String[]{"abc", "aaa", "atf"});
-                }
-                return false;
+            public void onError(Throwable e) {
+                Toast.makeText(MainActivity.this, e.getClass().getName(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNext(List<Post> posts) {
+                mAdapter.mList = posts;
             }
         });
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else if (mSearchView.isSearchOpen()) {
             mSearchView.closeSearch();
         } else {
@@ -82,14 +140,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem item = menu.findItem(R.id.search_item);
-        mSearchView.setMenuItem(item);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -97,7 +147,9 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        if (R.id.search_item == id) {
+            mSearchView.showSearch();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -105,11 +157,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        getSupportActionBar().setTitle(item.getTitle());
+        setTitle(item.getTitle());
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

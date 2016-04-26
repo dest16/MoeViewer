@@ -61,7 +61,7 @@ public interface MoeApi {
      * @param page  The page number.
      * @return list of post
      */
-    @GET("post.json")
+    @GET("https://yande.re/post.json")
     Observable<List<Post>> listPosts(
             @Query("limit") int limit, @Query("page") int page, @Query("tags") String tags);
 
