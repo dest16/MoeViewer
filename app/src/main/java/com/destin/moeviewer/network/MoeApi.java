@@ -18,12 +18,16 @@
 
 package com.destin.moeviewer.network;
 
+import android.support.annotation.StringDef;
+
 import com.destin.moeviewer.model.common.Artist;
 import com.destin.moeviewer.model.common.Comment;
+import com.destin.moeviewer.model.common.Post;
 import com.destin.moeviewer.model.common.Tag;
 import com.destin.moeviewer.model.common.Wiki;
-import com.destin.moeviewer.model.common.Post;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 import retrofit2.http.GET;
@@ -36,6 +40,15 @@ import rx.Observable;
  * http://konachan.com/
  */
 public interface MoeApi {
+    String DATE = "date";
+    String COUNT = "count";
+    String NAME = "name";
+
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({DATE, COUNT, NAME})
+    @interface Order {
+    }
+
 
 //    Status Code	Meaning
 //    200 OK	Request was successful
@@ -61,7 +74,7 @@ public interface MoeApi {
      * @param page  The page number.
      * @return list of post
      */
-    @GET("https://yande.re/post.json")
+    @GET("post.json")
     Observable<List<Post>> listPosts(
             @Query("limit") int limit, @Query("page") int page, @Query("tags") String tags);
 
@@ -82,8 +95,8 @@ public interface MoeApi {
      */
     @GET("tag.json")
     Observable<List<Tag>> listTags(
-            @Query("limit") int limit, @Query("page") int page, @Query("order") String order,
-            @Query("id") int id, @Query("after_id") int afterId, @Query("name") String name,
+            @Query("limit") Integer limit, @Query("page") Integer page, @Query("order") @Order String order,
+            @Query("id") Integer id, @Query("after_id") Integer afterId, @Query("name") String name,
             @Query("name_pattern ") String namePattern);
 
     /*

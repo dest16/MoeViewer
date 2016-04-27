@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.destin.moeviewer.provider;
+package com.destin.moeviewer;
 
 public interface BaseProvider {
 
