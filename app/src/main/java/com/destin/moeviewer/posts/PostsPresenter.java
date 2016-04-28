@@ -17,8 +17,6 @@
 package com.destin.moeviewer.posts;
 
 
-import android.os.NetworkOnMainThreadException;
-
 import com.destin.moeviewer.data.Provider;
 import com.destin.moeviewer.model.common.Post;
 import com.destin.sehaikun.StringUtils;
@@ -50,13 +48,13 @@ public class PostsPresenter implements PostsContract.Presenter {
     void initSubject() {
         autoCompleteSubject = BehaviorSubject.create();
         autoCompleteSubject
-                .debounce(500, TimeUnit.MILLISECONDS)
                 .filter(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String s) {
                         return !StringUtils.isEmpty(s);
                     }
                 })
+                .debounce(500, TimeUnit.MILLISECONDS)
                 .flatMap(mProvider.getAutoCompleteFunc())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

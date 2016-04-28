@@ -30,6 +30,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class YandeProvider implements Provider {
     private static YandeProvider sProvider;
@@ -55,7 +56,7 @@ public class YandeProvider implements Provider {
     private final Func1<String, Observable<String[]>> autoCompleteFunc = new Func1<String, Observable<String[]>>() {
         @Override
         public Observable<String[]> call(String s) {
-            return mMoeApi.listTags(8, null, MoeApi.COUNT, null, null, s, null).map(tagsToArray);
+            return mMoeApi.listTags(8, null, MoeApi.COUNT, null, null, s, null).map(tagsToArray).subscribeOn(Schedulers.io());
         }
     };
 
@@ -64,7 +65,7 @@ public class YandeProvider implements Provider {
         @Override
         public Observable<List<Post>> call(Integer integer) {
 
-            return mMoeApi.listPosts(POST_LIMIT, integer, null);
+            return mMoeApi.listPosts(POST_LIMIT, integer, null).subscribeOn(Schedulers.io());
         }
     };
 
