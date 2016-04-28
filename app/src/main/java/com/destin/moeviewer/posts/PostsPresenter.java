@@ -17,34 +17,63 @@
 package com.destin.moeviewer.posts;
 
 
+import android.os.NetworkOnMainThreadException;
+
+import com.destin.moeviewer.data.Provider;
 import com.destin.moeviewer.model.common.Post;
 import com.destin.sehaikun.StringUtils;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
 
 public class PostsPresenter implements PostsContract.Presenter {
     private final PostsContract.View mPostsView;
-    private PostsContract.Provider mProvider;
+    private Provider mProvider;
+    private BehaviorSubject<String> autoCompleteSubject;
+    private BehaviorSubject<Integer> postSubject;
     private int mPage = 0;
 
-    public PostsPresenter(PostsContract.View postsView) {
+    public PostsPresenter(PostsContract.View postsView, Provider provider) {
         mPostsView = postsView;
+        mProvider = provider;
         mPostsView.setPresenter(this);
+        initSubject();
+        loadPosts(true);
     }
 
-    @Override
-    public void loadPosts(boolean refresh) {
-        Observable.just(refresh ? mPage = 0 : mPage++)
+    void initSubject() {
+        autoCompleteSubject = BehaviorSubject.create();
+        autoCompleteSubject
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .filter(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String s) {
+                        return !StringUtils.isEmpty(s);
+                    }
+                })
+                .flatMap(mProvider.getAutoCompleteFunc())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(autoCompleteSubscriber);
+
+        postSubject = BehaviorSubject.create();
+        postSubject
                 .flatMap(mProvider.getPostFunc())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(postSubscriber);
+    }
+
+
+    @Override
+    public void loadPosts(boolean refresh) {
+        postSubject.onNext(0);
     }
 
     @Override
@@ -54,18 +83,11 @@ public class PostsPresenter implements PostsContract.Presenter {
 
     @Override
     public void autoComplete(String text) {
-        if (StringUtils.isEmpty(text))
-            return;
-        Observable.just(text).flatMap(new Func1<String, Observable<String[]>>() {
-            @Override
-            public Observable<String[]> call(String s) {
-                return null;
-            }
-        }).subscribe(autoCompleteSubscriber);
+        autoCompleteSubject.onNext(text + "*");
     }
 
     @Override
-    public void setProvider(PostsContract.Provider provider) {
+    public void setProvider(Provider provider) {
         mProvider = provider;
         loadPosts(true);
     }
@@ -78,7 +100,7 @@ public class PostsPresenter implements PostsContract.Presenter {
 
         @Override
         public void onError(Throwable e) {
-
+            mPostsView.showError(e.getMessage());
         }
 
         @Override
@@ -90,12 +112,11 @@ public class PostsPresenter implements PostsContract.Presenter {
     private Subscriber<List<Post>> postSubscriber = new Subscriber<List<Post>>() {
         @Override
         public void onCompleted() {
-
         }
 
         @Override
         public void onError(Throwable e) {
-
+            mPostsView.showError(e.getClass().getName());
         }
 
         @Override
@@ -103,4 +124,14 @@ public class PostsPresenter implements PostsContract.Presenter {
             mPostsView.showPosts(posts);
         }
     };
+
+    @Override
+    public void subscribe() {
+
+    }
+
+    @Override
+    public void unsubscribe() {
+
+    }
 }

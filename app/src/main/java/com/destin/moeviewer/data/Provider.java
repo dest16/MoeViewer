@@ -14,10 +14,21 @@
  * limitations under the License.
  */
 
-package com.destin.moeviewer;
+package com.destin.moeviewer.data;
 
-public interface BasePresenter {
-    void subscribe();
+import com.destin.moeviewer.BaseProvider;
+import com.destin.moeviewer.model.common.Post;
 
-    void unsubscribe();
+import java.util.List;
+
+import rx.Observable;
+import rx.functions.Func1;
+
+public interface Provider extends BaseProvider {
+    int POST_LIMIT = 20;
+
+    Func1<String, Observable<String[]>> getAutoCompleteFunc();
+
+    Func1<Integer, Observable<List<Post>>> getPostFunc();
+
 }

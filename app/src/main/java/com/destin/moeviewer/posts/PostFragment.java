@@ -18,9 +18,12 @@ package com.destin.moeviewer.posts;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.destin.moeviewer.R;
 import com.destin.moeviewer.adapter.PostAdapter;
@@ -36,7 +39,7 @@ import com.hippo.refreshlayout.RefreshLayout;
 import java.util.List;
 
 
-public class PostFragment extends BaseFragment implements PostsContract.View, RefreshLayout.OnRefreshListener, EasyRecyclerView.OnItemClickListener, EasyRecyclerView.OnItemLongClickListener {
+public class PostFragment extends BaseFragment implements PostsContract.View, RefreshLayout.OnRefreshListener, EasyRecyclerView.OnItemClickListener, EasyRecyclerView.OnItemLongClickListener, MaterialSearchView.OnQueryTextListener, Toolbar.OnMenuItemClickListener {
     private RefreshLayout mRefreshLayout;
     private EasyRecyclerView mRecyclerView;
     private Toolbar mToolbar;
@@ -51,6 +54,12 @@ public class PostFragment extends BaseFragment implements PostsContract.View, Re
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public void onViewCreated2(Bundle savedInstanceState) {
         mRefreshLayout = $(R.id.refresh_layout);
         mRecyclerView = $(R.id.recycler_view);
@@ -58,6 +67,8 @@ public class PostFragment extends BaseFragment implements PostsContract.View, Re
         mSearchView = $(R.id.search_view);
 
         mToolbar.setTitle(getActivity().getTitle());
+        mToolbar.inflateMenu(R.menu.main);
+        mToolbar.setOnMenuItemClickListener(this);
         mRefreshLayout.setHeaderColorSchemeResources(R.color.red_500, R.color.yellow_500, R.color.blue_500, R.color.green_500);
         mRefreshLayout.setFooterColorSchemeResources(R.color.green_500, R.color.blue_500, R.color.yellow_500, R.color.red_500);
         int barSize = ResourceUtils.getAttrValue(getContext(), android.R.attr.actionBarSize);
@@ -72,22 +83,40 @@ public class PostFragment extends BaseFragment implements PostsContract.View, Re
                 , padding + barSize, padding
                 , padding);
         mRecyclerView.setDrawSelectorOnTop(true);
-        mAdapter=new PostAdapter();
+        mAdapter = new PostAdapter();
         mRecyclerView.setAdapter(mAdapter);
+        mSearchView.setSubmitOnClick(true);
+        mSearchView.setOnQueryTextListener(this);
         mRefreshLayout.setOnRefreshListener(this);
         mRecyclerView.setOnItemClickListener(this);
         mRecyclerView.setOnItemLongClickListener(this);
+
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.search_item) {
+            mSearchView.showSearch();
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void showPosts(List<Post> posts) {
         mAdapter.mList = posts;
         mAdapter.notifyDataSetChanged();
+        mRefreshLayout.setHeaderRefreshing(false);
     }
 
     @Override
     public void showSuggestion(String[] suggests) {
         mSearchView.setSuggestions(suggests);
+    }
+
+    @Override
+    public void showError(String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -103,6 +132,7 @@ public class PostFragment extends BaseFragment implements PostsContract.View, Re
     @Override
     public void onHeaderRefresh() {
         mPresenter.loadPosts(true);
+
     }
 
     @Override
@@ -118,5 +148,29 @@ public class PostFragment extends BaseFragment implements PostsContract.View, Re
     @Override
     public boolean onItemLongClick(EasyRecyclerView parent, View view, int position, long id) {
         return false;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        mPresenter.autoComplete(newText);
+        return true;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.subscribe();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPresenter.unsubscribe();
     }
 }

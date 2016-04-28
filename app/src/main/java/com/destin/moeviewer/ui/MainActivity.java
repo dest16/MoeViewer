@@ -56,8 +56,7 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_root, postFragment).commit();
         }
         // Create the presenter
-        mPostsPresenter = new PostsPresenter(postFragment);
-        mPostsPresenter.setProvider(YandeProvider.getInstance());
+        mPostsPresenter = new PostsPresenter(postFragment, YandeProvider.getInstance());
 //        // Load previously saved state, if available.
 //        if (savedInstanceState != null) {
 //            TasksFilterType currentFiltering =

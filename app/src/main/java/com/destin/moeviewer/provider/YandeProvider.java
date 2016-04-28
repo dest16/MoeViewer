@@ -16,11 +16,11 @@
 
 package com.destin.moeviewer.provider;
 
+import com.destin.moeviewer.data.Provider;
 import com.destin.moeviewer.model.common.Post;
 import com.destin.moeviewer.model.common.Tag;
 import com.destin.moeviewer.network.LogInterceptor;
 import com.destin.moeviewer.network.MoeApi;
-import com.destin.moeviewer.posts.PostsContract;
 
 import java.util.List;
 
@@ -31,12 +31,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class YandeProvider implements PostsContract.Provider {
+public class YandeProvider implements Provider {
     private static YandeProvider sProvider;
     private MoeApi mMoeApi;
 
     private YandeProvider() {
-        OkHttpClient client=new OkHttpClient.Builder().addInterceptor(new LogInterceptor()).build();
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new LogInterceptor()).build();
         Retrofit retrofit = new Retrofit.Builder()
                 .client(client)
                 .baseUrl("https://yande.re/")
@@ -58,6 +58,7 @@ public class YandeProvider implements PostsContract.Provider {
             return mMoeApi.listTags(8, null, MoeApi.COUNT, null, null, s, null).map(tagsToArray);
         }
     };
+
 
     private final Func1<Integer, Observable<List<Post>>> postFunc = new Func1<Integer, Observable<List<Post>>>() {
         @Override

@@ -17,14 +17,11 @@
 package com.destin.moeviewer.posts;
 
 import com.destin.moeviewer.BasePresenter;
-import com.destin.moeviewer.BaseProvider;
 import com.destin.moeviewer.BaseView;
+import com.destin.moeviewer.data.Provider;
 import com.destin.moeviewer.model.common.Post;
 
 import java.util.List;
-
-import rx.Observable;
-import rx.functions.Func1;
 
 
 public interface PostsContract {
@@ -43,15 +40,10 @@ public interface PostsContract {
 
         void showSuggestion(String[] suggests);
 
+        void showError(String error);
+
         boolean isActive();
     }
 
-    interface Provider extends BaseProvider {
-        int POST_LIMIT = 20;
 
-        Func1<String, Observable<String[]>> getAutoCompleteFunc();
-
-        Func1<Integer, Observable<List<Post>>> getPostFunc();
-
-    }
 }
