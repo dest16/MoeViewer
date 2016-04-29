@@ -24,30 +24,64 @@ import com.destin.sehaikun.StringUtils;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
+import rx.subscriptions.CompositeSubscription;
 
 public class PostsPresenter implements PostsContract.Presenter {
     private final PostsContract.View mPostsView;
+    private CompositeSubscription mSubscriptions;
     private Provider mProvider;
-    private BehaviorSubject<String> autoCompleteSubject;
-    private BehaviorSubject<Integer> postSubject;
+    private PublishSubject<String> autoCompleteSubject;
+    private PublishSubject<Integer> postSubject;
     private int mPage = 0;
 
     public PostsPresenter(PostsContract.View postsView, Provider provider) {
         mPostsView = postsView;
         mProvider = provider;
         mPostsView.setPresenter(this);
-        initSubject();
-        loadPosts(true);
+        mSubscriptions = new CompositeSubscription();
+        autoCompleteSubject = PublishSubject.create();
+        postSubject = PublishSubject.create();
     }
 
-    void initSubject() {
-        autoCompleteSubject = BehaviorSubject.create();
-        autoCompleteSubject
+
+    @Override
+    public void loadRecent(boolean refresh) {
+        postSubject.onNext(refresh ? mPage = 0 : ++mPage);
+    }
+
+    @Override
+    public void loadSearch(String tag) {
+    }
+
+    @Override
+    public void autoComplete(String text) {
+        autoCompleteSubject.onNext(text);
+    }
+
+    @Override
+    public void setProvider(Provider provider) {
+        mProvider = provider;
+        subscribe();
+    }
+
+    @Override
+    public void subscribe() {
+        subscribeAutoComplete();
+        subscribePosts();
+    }
+
+    @Override
+    public void unsubscribe() {
+        mSubscriptions.clear();
+    }
+
+    private void subscribeAutoComplete() {
+        Subscription subscription = autoCompleteSubject
                 .filter(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String s) {
@@ -56,80 +90,50 @@ public class PostsPresenter implements PostsContract.Presenter {
                 })
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .flatMap(mProvider.getAutoCompleteFunc())
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(autoCompleteSubscriber);
+                .subscribe(new Action1<String[]>() {
+                    @Override
+                    public void call(String[] strings) {
+                        mPostsView.showSuggestion(strings);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mPostsView.showError(throwable.getClass().getName());
+                        subscribeAutoComplete();
+                    }
+                });
+        mSubscriptions.add(subscription);
+    }
 
-        postSubject = BehaviorSubject.create();
-        postSubject
-                .flatMap(mProvider.getPostFunc())
-                .subscribeOn(Schedulers.io())
+    private void subscribePosts() {
+        Subscription subscription = postSubject
+                .compose(mProvider.getPostTrans())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(postSubscriber);
+                .subscribe(new Action1<List<Post>>() {
+                    @Override
+                    public void call(List<Post> posts) {
+                        if (mPage > 0) {
+                            mPostsView.addPosts(posts);
+                            mPostsView.showPostsAdded();
+                        } else {
+                            mPostsView.showPosts(posts);
+                            mPostsView.showPostsShown();
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mPostsView.showError(throwable.getClass().getName());
+                        if (mPage > 0) {
+                            mPostsView.showPostsAdded();
+                        } else {
+                            mPostsView.showPostsShown();
+                        }
+                        subscribePosts();
+                    }
+                });
+        mSubscriptions.add(subscription);
     }
 
-
-    @Override
-    public void loadPosts(boolean refresh) {
-        postSubject.onNext(0);
-    }
-
-    @Override
-    public void search() {
-
-    }
-
-    @Override
-    public void autoComplete(String text) {
-        autoCompleteSubject.onNext(text + "*");
-    }
-
-    @Override
-    public void setProvider(Provider provider) {
-        mProvider = provider;
-        loadPosts(true);
-    }
-
-    private Subscriber<String[]> autoCompleteSubscriber = new Subscriber<String[]>() {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            mPostsView.showError(e.getMessage());
-        }
-
-        @Override
-        public void onNext(String[] strings) {
-            mPostsView.showSuggestion(strings);
-        }
-    };
-
-    private Subscriber<List<Post>> postSubscriber = new Subscriber<List<Post>>() {
-        @Override
-        public void onCompleted() {
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            mPostsView.showError(e.getClass().getName());
-        }
-
-        @Override
-        public void onNext(List<Post> posts) {
-            mPostsView.showPosts(posts);
-        }
-    };
-
-    @Override
-    public void subscribe() {
-
-    }
-
-    @Override
-    public void unsubscribe() {
-
-    }
 }

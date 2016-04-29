@@ -31,4 +31,8 @@ public interface Provider extends BaseProvider {
 
     Func1<Integer, Observable<List<Post>>> getPostFunc();
 
+    Observable.Transformer<String, String[]> getAutoCompleteTrans();
+
+    Observable.Transformer<Integer, List<Post>> getPostTrans();
+
 }

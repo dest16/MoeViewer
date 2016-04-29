@@ -71,7 +71,7 @@ public interface MoeApi {
      * @param tags  The tags to search for. Any tag combination that works on the web site will
      *              work here. This includes all the meta-tags.
      * @param limit How many posts you want to retrieve. There is a hard limit of 100 posts per request.
-     * @param page  The page number.
+     * @param page  The page number.start with 1
      * @return list of post
      */
     @GET("post.json")

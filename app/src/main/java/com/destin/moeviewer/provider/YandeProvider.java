@@ -56,7 +56,8 @@ public class YandeProvider implements Provider {
     private final Func1<String, Observable<String[]>> autoCompleteFunc = new Func1<String, Observable<String[]>>() {
         @Override
         public Observable<String[]> call(String s) {
-            return mMoeApi.listTags(8, null, MoeApi.COUNT, null, null, s, null).map(tagsToArray).subscribeOn(Schedulers.io());
+            return mMoeApi.listTags(8, null, MoeApi.COUNT, null, null, s + "*", null)
+                    .map(tagsToArray).subscribeOn(Schedulers.io());
         }
     };
 
@@ -80,6 +81,18 @@ public class YandeProvider implements Provider {
         }
     };
 
+    private final Observable.Transformer<Integer, List<Post>> postTrans = new Observable.Transformer<Integer, List<Post>>() {
+        @Override
+        public Observable<List<Post>> call(Observable<Integer> integerObservable) {
+            return integerObservable.flatMap(new Func1<Integer, Observable<List<Post>>>() {
+                @Override
+                public Observable<List<Post>> call(Integer integer) {
+                    return mMoeApi.listPosts(POST_LIMIT, integer + 1, null).subscribeOn(Schedulers.io());
+                }
+            });
+        }
+    };
+
 
     @Override
     public Func1<String, Observable<String[]>> getAutoCompleteFunc() {
@@ -89,5 +102,15 @@ public class YandeProvider implements Provider {
     @Override
     public Func1<Integer, Observable<List<Post>>> getPostFunc() {
         return postFunc;
+    }
+
+    @Override
+    public Observable.Transformer<String, String[]> getAutoCompleteTrans() {
+        return null;
+    }
+
+    @Override
+    public Observable.Transformer<Integer, List<Post>> getPostTrans() {
+        return postTrans;
     }
 }

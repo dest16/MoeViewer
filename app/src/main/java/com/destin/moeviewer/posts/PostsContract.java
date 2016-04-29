@@ -26,9 +26,9 @@ import java.util.List;
 
 public interface PostsContract {
     interface Presenter extends BasePresenter {
-        void loadPosts(boolean refresh);
+        void loadRecent(boolean refresh);
 
-        void search();
+        void loadSearch(String tag);
 
         void autoComplete(String text);
 
@@ -38,12 +38,16 @@ public interface PostsContract {
     interface View extends BaseView<Presenter> {
         void showPosts(List<Post> posts);
 
+        void addPosts(List<Post> posts);
+
         void showSuggestion(String[] suggests);
 
         void showError(String error);
 
+        void showPostsShown();
+
+        void showPostsAdded();
+
         boolean isActive();
     }
-
-
 }

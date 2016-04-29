@@ -19,6 +19,7 @@ package com.destin.moeviewer.posts;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ import com.destin.moeviewer.ui.BaseFragment;
 import com.destin.moeviewer.widget.MaterialSearchView;
 import com.destin.sehaikun.LayoutUtils;
 import com.destin.sehaikun.ResourceUtils;
+import com.destin.sehaikun.StringUtils;
 import com.hippo.easyrecyclerview.EasyRecyclerView;
 import com.hippo.easyrecyclerview.MarginItemDecoration;
 import com.hippo.refreshlayout.RefreshLayout;
@@ -39,7 +41,10 @@ import com.hippo.refreshlayout.RefreshLayout;
 import java.util.List;
 
 
-public class PostFragment extends BaseFragment implements PostsContract.View, RefreshLayout.OnRefreshListener, EasyRecyclerView.OnItemClickListener, EasyRecyclerView.OnItemLongClickListener, MaterialSearchView.OnQueryTextListener, Toolbar.OnMenuItemClickListener {
+public class PostFragment extends BaseFragment
+        implements PostsContract.View, RefreshLayout.OnRefreshListener,
+        EasyRecyclerView.OnItemClickListener, EasyRecyclerView.OnItemLongClickListener,
+        MaterialSearchView.OnQueryTextListener, Toolbar.OnMenuItemClickListener {
     private RefreshLayout mRefreshLayout;
     private EasyRecyclerView mRecyclerView;
     private Toolbar mToolbar;
@@ -87,10 +92,25 @@ public class PostFragment extends BaseFragment implements PostsContract.View, Re
         mRecyclerView.setAdapter(mAdapter);
         mSearchView.setSubmitOnClick(true);
         mSearchView.setOnQueryTextListener(this);
+        mRecyclerView.addOnScrollListener(mOnScrollListener);
         mRefreshLayout.setOnRefreshListener(this);
         mRecyclerView.setOnItemClickListener(this);
         mRecyclerView.setOnItemLongClickListener(this);
 
+        mPresenter.subscribe();
+        mRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshLayout.setHeaderRefreshing(true);
+            }
+        });
+        mPresenter.loadRecent(true);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.unsubscribe();
     }
 
     @Override
@@ -110,6 +130,13 @@ public class PostFragment extends BaseFragment implements PostsContract.View, Re
     }
 
     @Override
+    public void addPosts(List<Post> posts) {
+        mAdapter.mList.addAll(posts);
+        mAdapter.notifyItemRangeInserted(mAdapter.mList.size() - posts.size(), posts.size());
+
+    }
+
+    @Override
     public void showSuggestion(String[] suggests) {
         mSearchView.setSuggestions(suggests);
     }
@@ -117,6 +144,16 @@ public class PostFragment extends BaseFragment implements PostsContract.View, Re
     @Override
     public void showError(String error) {
         Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showPostsShown() {
+        mRefreshLayout.setHeaderRefreshing(false);
+    }
+
+    @Override
+    public void showPostsAdded() {
+        mRefreshLayout.setFooterRefreshing(false);
     }
 
     @Override
@@ -131,13 +168,12 @@ public class PostFragment extends BaseFragment implements PostsContract.View, Re
 
     @Override
     public void onHeaderRefresh() {
-        mPresenter.loadPosts(true);
-
+        mPresenter.loadRecent(true);
     }
 
     @Override
     public void onFooterRefresh() {
-
+        mPresenter.loadRecent(false);
     }
 
     @Override
@@ -152,6 +188,11 @@ public class PostFragment extends BaseFragment implements PostsContract.View, Re
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+        String trim = query.trim();
+        mToolbar.setSubtitle(trim);
+        mRefreshLayout.setHeaderRefreshing(true);
+        if (!StringUtils.isEmpty(trim)) mPresenter.loadSearch(trim);
+        else mPresenter.loadRecent(true);
         return false;
     }
 
@@ -161,16 +202,14 @@ public class PostFragment extends BaseFragment implements PostsContract.View, Re
         return true;
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mPresenter.subscribe();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mPresenter.unsubscribe();
-    }
+    private final RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            if (!mRefreshLayout.isRefreshing() && mRefreshLayout.isAlmostBottom()) {
+                // Get next page
+                mRefreshLayout.setFooterRefreshing(true);
+                onFooterRefresh();
+            }
+        }
+    };
 }
