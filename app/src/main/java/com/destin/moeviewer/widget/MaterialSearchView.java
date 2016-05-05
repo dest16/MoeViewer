@@ -21,8 +21,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -56,7 +54,6 @@ import com.destin.moeviewer.R;
 import com.destin.sehaikun.AnimationUtils;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
 /**
  * a fork from com.miguelcatalan.materialsearchview
@@ -281,16 +278,6 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
 //            }
 //        }
 //    }
-
-    private boolean isVoiceAvailable() {
-        if (isInEditMode()) {
-            return true;
-        }
-        PackageManager pm = getContext().getPackageManager();
-        List<ResolveInfo> activities = pm.queryIntentActivities(
-                new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
-        return activities.size() == 0;
-    }
 
     public void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);

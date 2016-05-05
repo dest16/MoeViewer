@@ -100,17 +100,24 @@ public class YandeProvider implements Provider {
     }
 
     @Override
-    public Func1<Integer, Observable<List<Post>>> getPostFunc() {
-        return postFunc;
-    }
-
-    @Override
-    public Observable.Transformer<String, String[]> getAutoCompleteTrans() {
-        return null;
-    }
-
-    @Override
     public Observable.Transformer<Integer, List<Post>> getPostTrans() {
         return postTrans;
     }
+
+    @Override
+    public Observable<List<Post>> getRecentPosts(int page) {
+        return mMoeApi.listPosts(POST_LIMIT, page + 1, null);
+    }
+
+    @Override
+    public Observable<List<Post>> getSearchPosts(int page, String tag) {
+        return mMoeApi.listPosts(POST_LIMIT, page + 1, tag);
+    }
+
+    @Override
+    public Observable<String[]> getSuggestions(String tag) {
+        return mMoeApi.listTags(8, null, MoeApi.COUNT, null, null, tag + "*", null).map(tagsToArray);
+    }
+
+
 }

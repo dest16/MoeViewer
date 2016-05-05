@@ -29,10 +29,13 @@ public interface Provider extends BaseProvider {
 
     Func1<String, Observable<String[]>> getAutoCompleteFunc();
 
-    Func1<Integer, Observable<List<Post>>> getPostFunc();
-
-    Observable.Transformer<String, String[]> getAutoCompleteTrans();
-
     Observable.Transformer<Integer, List<Post>> getPostTrans();
+
+
+    Observable<List<Post>> getRecentPosts(int page);
+
+    Observable<List<Post>> getSearchPosts(int page, String tag);
+
+    Observable<String[]> getSuggestions(String tag);
 
 }

@@ -17,17 +17,18 @@
 package com.destin.moeviewer.posts;
 
 
+import android.support.annotation.Nullable;
+
 import com.destin.moeviewer.data.Provider;
 import com.destin.moeviewer.model.common.Post;
+import com.destin.moeviewer.util.SchedulersCompat;
 import com.destin.sehaikun.StringUtils;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
@@ -50,17 +51,93 @@ public class PostsPresenter implements PostsContract.Presenter {
 
 
     @Override
-    public void loadRecent(boolean refresh) {
-        postSubject.onNext(refresh ? mPage = 0 : ++mPage);
+    public void loadPosts(final boolean refresh, @Nullable String tag) {
+        if (StringUtils.isEmpty(tag)) {
+            Subscription subscription = mProvider.getRecentPosts(refresh ? mPage = 0 : ++mPage)
+                    .compose(SchedulersCompat.<List<Post>>applyIoSchedulers())
+                    .doAfterTerminate(new Action0() {
+                        @Override
+                        public void call() {
+                            mPostsView.completeLoadPosts(refresh);
+                        }
+                    })
+                    .subscribe(new Action1<List<Post>>() {
+                        @Override
+                        public void call(List<Post> posts) {
+                            mPostsView.showPosts(posts, refresh);
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            mPostsView.showError(throwable.getClass().getName());
+                        }
+                    });
+            mSubscriptions.add(subscription);
+        } else {
+            Subscription subscription = mProvider.getSearchPosts(refresh ? mPage = 0 : ++mPage, tag)
+                    .compose(SchedulersCompat.<List<Post>>applyIoSchedulers())
+                    .doAfterTerminate(new Action0() {
+                        @Override
+                        public void call() {
+                            mPostsView.completeLoadPosts(refresh);
+                        }
+                    })
+                    .subscribe(new Action1<List<Post>>() {
+                        @Override
+                        public void call(List<Post> posts) {
+                            mPostsView.showPosts(posts, refresh);
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            mPostsView.showError(throwable.getClass().getName());
+                        }
+                    });
+            mSubscriptions.add(subscription);
+        }
+
     }
 
-    @Override
-    public void loadSearch(String tag) {
-    }
+//    @Override
+//    public void loadSearch(String tag) {
+//        Subscription subscription = mProvider.getPosts(refresh ? 0 : ++mPage)
+//                .compose(SchedulersCompat.<List<Post>>applyIoSchedulers())
+//                .doAfterTerminate(new Action0() {
+//                    @Override
+//                    public void call() {
+//                        mPostsView.completeLoadPosts(refresh);
+//                    }
+//                })
+//                .subscribe(new Action1<List<Post>>() {
+//                    @Override
+//                    public void call(List<Post> posts) {
+//                        mPostsView.showPosts(posts, refresh);
+//                    }
+//                }, new Action1<Throwable>() {
+//                    @Override
+//                    public void call(Throwable throwable) {
+//                        mPostsView.showError(throwable.getClass().getName());
+//                    }
+//                });
+//        mSubscriptions.add(subscription);
+//    }
 
     @Override
-    public void autoComplete(String text) {
-        autoCompleteSubject.onNext(text);
+    public void loadSuggestions(String text) {
+        Subscription subscription = mProvider.getSuggestions(text)
+                .compose(SchedulersCompat.<String[]>applyIoSchedulers())
+                .subscribe(new Action1<String[]>() {
+                    @Override
+                    public void call(String[] strings) {
+                        mPostsView.showSuggestions(strings);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        mPostsView.showError(throwable.getClass().getName());
+                    }
+                });
+        mSubscriptions.add(subscription);
     }
 
     @Override
@@ -71,8 +148,6 @@ public class PostsPresenter implements PostsContract.Presenter {
 
     @Override
     public void subscribe() {
-        subscribeAutoComplete();
-        subscribePosts();
     }
 
     @Override
@@ -80,60 +155,5 @@ public class PostsPresenter implements PostsContract.Presenter {
         mSubscriptions.clear();
     }
 
-    private void subscribeAutoComplete() {
-        Subscription subscription = autoCompleteSubject
-                .filter(new Func1<String, Boolean>() {
-                    @Override
-                    public Boolean call(String s) {
-                        return !StringUtils.isEmpty(s);
-                    }
-                })
-                .debounce(500, TimeUnit.MILLISECONDS)
-                .flatMap(mProvider.getAutoCompleteFunc())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<String[]>() {
-                    @Override
-                    public void call(String[] strings) {
-                        mPostsView.showSuggestion(strings);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mPostsView.showError(throwable.getClass().getName());
-                        subscribeAutoComplete();
-                    }
-                });
-        mSubscriptions.add(subscription);
-    }
-
-    private void subscribePosts() {
-        Subscription subscription = postSubject
-                .compose(mProvider.getPostTrans())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Post>>() {
-                    @Override
-                    public void call(List<Post> posts) {
-                        if (mPage > 0) {
-                            mPostsView.addPosts(posts);
-                            mPostsView.showPostsAdded();
-                        } else {
-                            mPostsView.showPosts(posts);
-                            mPostsView.showPostsShown();
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mPostsView.showError(throwable.getClass().getName());
-                        if (mPage > 0) {
-                            mPostsView.showPostsAdded();
-                        } else {
-                            mPostsView.showPostsShown();
-                        }
-                        subscribePosts();
-                    }
-                });
-        mSubscriptions.add(subscription);
-    }
 
 }

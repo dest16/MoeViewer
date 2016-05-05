@@ -33,7 +33,6 @@ import com.destin.moeviewer.ui.BaseFragment;
 import com.destin.moeviewer.widget.MaterialSearchView;
 import com.destin.sehaikun.LayoutUtils;
 import com.destin.sehaikun.ResourceUtils;
-import com.destin.sehaikun.StringUtils;
 import com.hippo.easyrecyclerview.EasyRecyclerView;
 import com.hippo.easyrecyclerview.MarginItemDecoration;
 import com.hippo.refreshlayout.RefreshLayout;
@@ -104,7 +103,7 @@ public class PostFragment extends BaseFragment
                 mRefreshLayout.setHeaderRefreshing(true);
             }
         });
-        mPresenter.loadRecent(true);
+        mPresenter.loadPosts(true, getSearchText());
     }
 
     @Override
@@ -123,21 +122,25 @@ public class PostFragment extends BaseFragment
     }
 
     @Override
-    public void showPosts(List<Post> posts) {
-        mAdapter.mList = posts;
-        mAdapter.notifyDataSetChanged();
-        mRefreshLayout.setHeaderRefreshing(false);
+    public void showPosts(List<Post> posts, boolean refresh) {
+        if (refresh) {
+            mAdapter.mList = posts;
+            mAdapter.notifyDataSetChanged();
+        } else {
+            mAdapter.mList.addAll(posts);
+            mAdapter.notifyItemRangeInserted(mAdapter.mList.size() - posts.size(), posts.size());
+        }
     }
 
     @Override
-    public void addPosts(List<Post> posts) {
-        mAdapter.mList.addAll(posts);
-        mAdapter.notifyItemRangeInserted(mAdapter.mList.size() - posts.size(), posts.size());
-
+    public void completeLoadPosts(boolean refresh) {
+        if (refresh) mRefreshLayout.setHeaderRefreshing(false);
+        else mRefreshLayout.setFooterRefreshing(false);
     }
 
+
     @Override
-    public void showSuggestion(String[] suggests) {
+    public void showSuggestions(String[] suggests) {
         mSearchView.setSuggestions(suggests);
     }
 
@@ -156,6 +159,7 @@ public class PostFragment extends BaseFragment
         mRefreshLayout.setFooterRefreshing(false);
     }
 
+
     @Override
     public boolean isActive() {
         return isAdded();
@@ -168,12 +172,12 @@ public class PostFragment extends BaseFragment
 
     @Override
     public void onHeaderRefresh() {
-        mPresenter.loadRecent(true);
+        mPresenter.loadPosts(true, getSearchText());
     }
 
     @Override
     public void onFooterRefresh() {
-        mPresenter.loadRecent(false);
+        mPresenter.loadPosts(false, getSearchText());
     }
 
     @Override
@@ -191,15 +195,19 @@ public class PostFragment extends BaseFragment
         String trim = query.trim();
         mToolbar.setSubtitle(trim);
         mRefreshLayout.setHeaderRefreshing(true);
-        if (!StringUtils.isEmpty(trim)) mPresenter.loadSearch(trim);
-        else mPresenter.loadRecent(true);
+        mPresenter.loadPosts(true, trim);
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        mPresenter.autoComplete(newText);
+        mPresenter.loadSuggestions(newText);
         return true;
+    }
+
+    private String getSearchText() {
+        CharSequence sub = mToolbar.getSubtitle();
+        return sub != null ? sub.toString() : null;
     }
 
     private final RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {

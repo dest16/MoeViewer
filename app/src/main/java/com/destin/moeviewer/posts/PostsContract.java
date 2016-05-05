@@ -16,6 +16,9 @@
 
 package com.destin.moeviewer.posts;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.destin.moeviewer.BasePresenter;
 import com.destin.moeviewer.BaseView;
 import com.destin.moeviewer.data.Provider;
@@ -26,27 +29,26 @@ import java.util.List;
 
 public interface PostsContract {
     interface Presenter extends BasePresenter {
-        void loadRecent(boolean refresh);
+        void loadPosts(boolean refresh, @Nullable String tag);
 
-        void loadSearch(String tag);
+        void loadSuggestions(String text);
 
-        void autoComplete(String text);
-
-        void setProvider(Provider provider);
+        void setProvider(@NonNull Provider provider);
     }
 
     interface View extends BaseView<Presenter> {
-        void showPosts(List<Post> posts);
 
-        void addPosts(List<Post> posts);
+        void showPosts(List<Post> posts, boolean refresh);
 
-        void showSuggestion(String[] suggests);
+        void showSuggestions(String[] suggests);
 
         void showError(String error);
 
         void showPostsShown();
 
         void showPostsAdded();
+
+        void completeLoadPosts(boolean refresh);
 
         boolean isActive();
     }
