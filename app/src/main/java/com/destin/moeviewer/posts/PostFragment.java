@@ -29,15 +29,21 @@ import android.widget.Toast;
 import com.destin.moeviewer.R;
 import com.destin.moeviewer.adapter.PostAdapter;
 import com.destin.moeviewer.model.common.Post;
-import com.destin.moeviewer.ui.BaseFragment;
+import com.destin.moeviewer.BaseFragment;
 import com.destin.moeviewer.widget.MaterialSearchView;
 import com.destin.sehaikun.LayoutUtils;
 import com.destin.sehaikun.ResourceUtils;
+import com.destin.sehaikun.StringUtils;
 import com.hippo.easyrecyclerview.EasyRecyclerView;
 import com.hippo.easyrecyclerview.MarginItemDecoration;
 import com.hippo.refreshlayout.RefreshLayout;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.subjects.PublishSubject;
 
 
 public class PostFragment extends BaseFragment
@@ -51,6 +57,7 @@ public class PostFragment extends BaseFragment
 
     private PostAdapter mAdapter;
     private PostsContract.Presenter mPresenter;
+    private PublishSubject<String> mSuggestSubject;
 
     @Override
     protected int layoutId() {
@@ -95,6 +102,22 @@ public class PostFragment extends BaseFragment
         mRefreshLayout.setOnRefreshListener(this);
         mRecyclerView.setOnItemClickListener(this);
         mRecyclerView.setOnItemLongClickListener(this);
+
+        mSuggestSubject = PublishSubject.create();
+        mSuggestSubject
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .filter(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String s) {
+                        return !StringUtils.isEmpty(s);
+                    }
+                })
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        mPresenter.loadSuggestions(s);
+                    }
+                });
 
         mPresenter.subscribe();
         mRefreshLayout.post(new Runnable() {
@@ -182,6 +205,8 @@ public class PostFragment extends BaseFragment
 
     @Override
     public boolean onItemClick(EasyRecyclerView parent, View view, int position, long id) {
+
+
         return false;
     }
 
@@ -201,7 +226,7 @@ public class PostFragment extends BaseFragment
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        mPresenter.loadSuggestions(newText);
+        mSuggestSubject.onNext(newText);
         return true;
     }
 

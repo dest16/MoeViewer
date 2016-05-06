@@ -14,42 +14,17 @@
  * limitations under the License.
  */
 
-package com.destin.moeviewer.posts;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+package com.destin.moeviewer.postdetail;
 
 import com.destin.moeviewer.BasePresenter;
 import com.destin.moeviewer.BaseView;
-import com.destin.moeviewer.data.source.MoeDataSource;
-import com.destin.moeviewer.model.common.Post;
 
-import java.util.List;
-
-
-public interface PostsContract {
+public interface PostDetailContract {
     interface Presenter extends BasePresenter {
-        void loadPosts(boolean refresh, @Nullable String tag);
 
-        void loadSuggestions(String text);
-
-        void setProvider(@NonNull MoeDataSource source);
     }
 
     interface View extends BaseView<Presenter> {
 
-        void showPosts(List<Post> posts, boolean refresh);
-
-        void showSuggestions(String[] suggests);
-
-        void showError(String error);
-
-        void showPostsShown();
-
-        void showPostsAdded();
-
-        void completeLoadPosts(boolean refresh);
-
-        boolean isActive();
     }
 }

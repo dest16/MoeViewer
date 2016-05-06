@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.destin.moeviewer.provider;
+package com.destin.moeviewer.data.source;
 
-import com.destin.moeviewer.data.Provider;
 import com.destin.moeviewer.model.common.Post;
 import com.destin.moeviewer.model.common.Tag;
 import com.destin.moeviewer.network.LogInterceptor;
@@ -30,13 +29,13 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
-public class YandeProvider implements Provider {
-    private static YandeProvider sProvider;
+public class YandeRepository implements MoeDataSource {
+    private static final int POST_LIMIT = 20;
+    private static YandeRepository sProvider;
     private MoeApi mMoeApi;
 
-    private YandeProvider() {
+    private YandeRepository() {
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new LogInterceptor()).build();
         Retrofit retrofit = new Retrofit.Builder()
                 .client(client)
@@ -47,28 +46,11 @@ public class YandeProvider implements Provider {
         mMoeApi = retrofit.create(MoeApi.class);
     }
 
-    public static YandeProvider getInstance() {
+    public static YandeRepository getInstance() {
         if (sProvider == null)
-            sProvider = new YandeProvider();
+            sProvider = new YandeRepository();
         return sProvider;
     }
-
-    private final Func1<String, Observable<String[]>> autoCompleteFunc = new Func1<String, Observable<String[]>>() {
-        @Override
-        public Observable<String[]> call(String s) {
-            return mMoeApi.listTags(8, null, MoeApi.COUNT, null, null, s + "*", null)
-                    .map(tagsToArray).subscribeOn(Schedulers.io());
-        }
-    };
-
-
-    private final Func1<Integer, Observable<List<Post>>> postFunc = new Func1<Integer, Observable<List<Post>>>() {
-        @Override
-        public Observable<List<Post>> call(Integer integer) {
-
-            return mMoeApi.listPosts(POST_LIMIT, integer, null).subscribeOn(Schedulers.io());
-        }
-    };
 
 
     private final Func1<List<Tag>, String[]> tagsToArray = new Func1<List<Tag>, String[]>() {
@@ -80,29 +62,6 @@ public class YandeProvider implements Provider {
             return array;
         }
     };
-
-    private final Observable.Transformer<Integer, List<Post>> postTrans = new Observable.Transformer<Integer, List<Post>>() {
-        @Override
-        public Observable<List<Post>> call(Observable<Integer> integerObservable) {
-            return integerObservable.flatMap(new Func1<Integer, Observable<List<Post>>>() {
-                @Override
-                public Observable<List<Post>> call(Integer integer) {
-                    return mMoeApi.listPosts(POST_LIMIT, integer + 1, null).subscribeOn(Schedulers.io());
-                }
-            });
-        }
-    };
-
-
-    @Override
-    public Func1<String, Observable<String[]>> getAutoCompleteFunc() {
-        return autoCompleteFunc;
-    }
-
-    @Override
-    public Observable.Transformer<Integer, List<Post>> getPostTrans() {
-        return postTrans;
-    }
 
     @Override
     public Observable<List<Post>> getRecentPosts(int page) {
@@ -118,6 +77,5 @@ public class YandeProvider implements Provider {
     public Observable<String[]> getSuggestions(String tag) {
         return mMoeApi.listTags(8, null, MoeApi.COUNT, null, null, tag + "*", null).map(tagsToArray);
     }
-
 
 }

@@ -424,7 +424,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
      */
     public void setSuggestions(String[] suggestions) {
         if (suggestions != null && suggestions.length > 0) {
-            mTintView.setVisibility(VISIBLE);
+//            mTintView.setVisibility(VISIBLE);
             if (mAdapter == null) {
                 final SearchAdapter adapter = new SearchAdapter(mContext, suggestions, suggestionIcon, ellipsize);
                 setAdapter(adapter);
@@ -439,9 +439,10 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
                 ((SearchAdapter) mAdapter).setArray(suggestions);
                 startFilter(mSearchSrcTextView.getText());
             }
-        } else {
-            mTintView.setVisibility(GONE);
         }
+//        else {
+//            mTintView.setVisibility(GONE);
+//        }
     }
 
     /**

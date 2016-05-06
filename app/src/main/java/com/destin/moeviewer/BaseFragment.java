@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.destin.moeviewer.ui;
+package com.destin.moeviewer;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;

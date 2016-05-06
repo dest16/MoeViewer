@@ -17,9 +17,10 @@
 package com.destin.moeviewer.posts;
 
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.destin.moeviewer.data.Provider;
+import com.destin.moeviewer.data.source.MoeDataSource;
 import com.destin.moeviewer.model.common.Post;
 import com.destin.moeviewer.util.SchedulersCompat;
 import com.destin.sehaikun.StringUtils;
@@ -29,31 +30,29 @@ import java.util.List;
 import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
 public class PostsPresenter implements PostsContract.Presenter {
     private final PostsContract.View mPostsView;
     private CompositeSubscription mSubscriptions;
-    private Provider mProvider;
-    private PublishSubject<String> autoCompleteSubject;
-    private PublishSubject<Integer> postSubject;
+    private Subscription mPostsSubscription;
+    private Subscription mSuggestSubscription;
+    private MoeDataSource mDataSource;
     private int mPage = 0;
 
-    public PostsPresenter(PostsContract.View postsView, Provider provider) {
+    public PostsPresenter(PostsContract.View postsView, MoeDataSource source) {
         mPostsView = postsView;
-        mProvider = provider;
+        mDataSource = source;
         mPostsView.setPresenter(this);
         mSubscriptions = new CompositeSubscription();
-        autoCompleteSubject = PublishSubject.create();
-        postSubject = PublishSubject.create();
     }
 
 
     @Override
     public void loadPosts(final boolean refresh, @Nullable String tag) {
+        unsubscription(mPostsSubscription);
         if (StringUtils.isEmpty(tag)) {
-            Subscription subscription = mProvider.getRecentPosts(refresh ? mPage = 0 : ++mPage)
+            mPostsSubscription = mDataSource.getRecentPosts(refresh ? mPage = 0 : ++mPage)
                     .compose(SchedulersCompat.<List<Post>>applyIoSchedulers())
                     .doAfterTerminate(new Action0() {
                         @Override
@@ -72,9 +71,9 @@ public class PostsPresenter implements PostsContract.Presenter {
                             mPostsView.showError(throwable.getClass().getName());
                         }
                     });
-            mSubscriptions.add(subscription);
+            mSubscriptions.add(mPostsSubscription);
         } else {
-            Subscription subscription = mProvider.getSearchPosts(refresh ? mPage = 0 : ++mPage, tag)
+            mPostsSubscription = mDataSource.getSearchPosts(refresh ? mPage = 0 : ++mPage, tag)
                     .compose(SchedulersCompat.<List<Post>>applyIoSchedulers())
                     .doAfterTerminate(new Action0() {
                         @Override
@@ -93,38 +92,15 @@ public class PostsPresenter implements PostsContract.Presenter {
                             mPostsView.showError(throwable.getClass().getName());
                         }
                     });
-            mSubscriptions.add(subscription);
+            mSubscriptions.add(mPostsSubscription);
         }
 
     }
 
-//    @Override
-//    public void loadSearch(String tag) {
-//        Subscription subscription = mProvider.getPosts(refresh ? 0 : ++mPage)
-//                .compose(SchedulersCompat.<List<Post>>applyIoSchedulers())
-//                .doAfterTerminate(new Action0() {
-//                    @Override
-//                    public void call() {
-//                        mPostsView.completeLoadPosts(refresh);
-//                    }
-//                })
-//                .subscribe(new Action1<List<Post>>() {
-//                    @Override
-//                    public void call(List<Post> posts) {
-//                        mPostsView.showPosts(posts, refresh);
-//                    }
-//                }, new Action1<Throwable>() {
-//                    @Override
-//                    public void call(Throwable throwable) {
-//                        mPostsView.showError(throwable.getClass().getName());
-//                    }
-//                });
-//        mSubscriptions.add(subscription);
-//    }
-
     @Override
     public void loadSuggestions(String text) {
-        Subscription subscription = mProvider.getSuggestions(text)
+        unsubscription(mSuggestSubscription);
+        mSuggestSubscription = mDataSource.getSuggestions(text)
                 .compose(SchedulersCompat.<String[]>applyIoSchedulers())
                 .subscribe(new Action1<String[]>() {
                     @Override
@@ -137,17 +113,18 @@ public class PostsPresenter implements PostsContract.Presenter {
                         mPostsView.showError(throwable.getClass().getName());
                     }
                 });
-        mSubscriptions.add(subscription);
+        mSubscriptions.add(mSuggestSubscription);
     }
 
     @Override
-    public void setProvider(Provider provider) {
-        mProvider = provider;
+    public void setProvider(@NonNull MoeDataSource source) {
+        mDataSource = source;
         subscribe();
     }
 
     @Override
     public void subscribe() {
+
     }
 
     @Override
@@ -156,4 +133,8 @@ public class PostsPresenter implements PostsContract.Presenter {
     }
 
 
+    private void unsubscription(Subscription subscription) {
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
+    }
 }
