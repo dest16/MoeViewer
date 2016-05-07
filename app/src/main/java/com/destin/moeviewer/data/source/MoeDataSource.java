@@ -16,7 +16,7 @@
 
 package com.destin.moeviewer.data.source;
 
-import com.destin.moeviewer.model.common.Post;
+import com.destin.moeviewer.model.common.MoePost;
 
 import java.util.List;
 
@@ -24,9 +24,9 @@ import rx.Observable;
 
 public interface MoeDataSource {
 
-    Observable<List<Post>> getRecentPosts(int page);
+    Observable<List<MoePost>> getRecentPosts(int page);
 
-    public Observable<List<Post>> getSearchPosts(int page, String tag);
+    public Observable<List<MoePost>> getSearchPosts(int page, String tag);
 
     public Observable<String[]> getSuggestions(String tag);
 }

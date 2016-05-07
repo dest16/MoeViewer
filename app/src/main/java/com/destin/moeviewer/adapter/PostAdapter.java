@@ -23,14 +23,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.destin.moeviewer.R;
-import com.destin.moeviewer.model.common.Post;
+import com.destin.moeviewer.model.common.MoePost;
 import com.destin.moeviewer.widget.StaggeredImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
-    public List<Post> mList;
+    public List<MoePost> mList;
 
     @Override
     public PostHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -41,7 +41,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
     @Override
     public void onBindViewHolder(PostHolder holder, int position) {
-        Post post = mList.get(position);
+        MoePost post = mList.get(position);
         float ratio = (float) post.getPreviewHeight() / post.getPreviewWidth();
         holder.image.setRatio(ratio);
         holder.desc.setText(post.getTags());

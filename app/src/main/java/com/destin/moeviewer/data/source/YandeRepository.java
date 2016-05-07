@@ -16,8 +16,8 @@
 
 package com.destin.moeviewer.data.source;
 
-import com.destin.moeviewer.model.common.Post;
-import com.destin.moeviewer.model.common.Tag;
+import com.destin.moeviewer.model.common.MoePost;
+import com.destin.moeviewer.model.common.MoeTag;
 import com.destin.moeviewer.network.LogInterceptor;
 import com.destin.moeviewer.network.MoeApi;
 
@@ -53,9 +53,9 @@ public class YandeRepository implements MoeDataSource {
     }
 
 
-    private final Func1<List<Tag>, String[]> tagsToArray = new Func1<List<Tag>, String[]>() {
+    private final Func1<List<MoeTag>, String[]> tagsToArray = new Func1<List<MoeTag>, String[]>() {
         @Override
-        public String[] call(List<Tag> tags) {
+        public String[] call(List<MoeTag> tags) {
             String[] array = new String[tags.size()];
             for (int i = 0; i < array.length; i++)
                 array[i] = tags.get(i).getName();
@@ -64,12 +64,12 @@ public class YandeRepository implements MoeDataSource {
     };
 
     @Override
-    public Observable<List<Post>> getRecentPosts(int page) {
+    public Observable<List<MoePost>> getRecentPosts(int page) {
         return mMoeApi.listPosts(POST_LIMIT, page + 1, null);
     }
 
     @Override
-    public Observable<List<Post>> getSearchPosts(int page, String tag) {
+    public Observable<List<MoePost>> getSearchPosts(int page, String tag) {
         return mMoeApi.listPosts(POST_LIMIT, page + 1, tag);
     }
 

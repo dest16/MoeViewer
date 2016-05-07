@@ -134,9 +134,7 @@ public interface DonmaiApi {
      */
     @GET("tags/autocomplete.json")
     Observable<List<DonmaiTag>> autoTags(@Query("search[name_matches]") String nameMatches);
-    /*
-    * Wiki
-    */
+
 
     /**
      * @param title

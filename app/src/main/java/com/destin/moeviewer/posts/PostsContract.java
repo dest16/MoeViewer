@@ -22,7 +22,7 @@ import android.support.annotation.Nullable;
 import com.destin.moeviewer.BasePresenter;
 import com.destin.moeviewer.BaseView;
 import com.destin.moeviewer.data.source.MoeDataSource;
-import com.destin.moeviewer.model.common.Post;
+import com.destin.moeviewer.model.common.MoePost;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public interface PostsContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showPosts(List<Post> posts, boolean refresh);
+        void showPosts(List<MoePost> posts, boolean refresh);
 
         void showSuggestions(String[] suggests);
 

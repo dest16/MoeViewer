@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import com.destin.moeviewer.R;
 import com.destin.moeviewer.adapter.PostAdapter;
-import com.destin.moeviewer.model.common.Post;
+import com.destin.moeviewer.model.common.MoePost;
 import com.destin.moeviewer.BaseFragment;
 import com.destin.moeviewer.widget.MaterialSearchView;
 import com.destin.sehaikun.LayoutUtils;
@@ -145,7 +145,7 @@ public class PostFragment extends BaseFragment
     }
 
     @Override
-    public void showPosts(List<Post> posts, boolean refresh) {
+    public void showPosts(List<MoePost> posts, boolean refresh) {
         if (refresh) {
             mAdapter.mList = posts;
             mAdapter.notifyDataSetChanged();

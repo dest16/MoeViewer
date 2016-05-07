@@ -20,11 +20,11 @@ package com.destin.moeviewer.network;
 
 import android.support.annotation.StringDef;
 
-import com.destin.moeviewer.model.common.Artist;
-import com.destin.moeviewer.model.common.Comment;
-import com.destin.moeviewer.model.common.Post;
-import com.destin.moeviewer.model.common.Tag;
-import com.destin.moeviewer.model.common.Wiki;
+import com.destin.moeviewer.model.common.MoeArtist;
+import com.destin.moeviewer.model.common.MoeComment;
+import com.destin.moeviewer.model.common.MoePost;
+import com.destin.moeviewer.model.common.MoeTag;
+import com.destin.moeviewer.model.common.MoeWiki;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -75,7 +75,7 @@ public interface MoeApi {
      * @return list of post
      */
     @GET("post.json")
-    Observable<List<Post>> listPosts(
+    Observable<List<MoePost>> listPosts(
             @Query("limit") int limit, @Query("page") int page, @Query("tags") String tags);
 
     /*
@@ -94,7 +94,7 @@ public interface MoeApi {
      * @return list of tag
      */
     @GET("tag.json")
-    Observable<List<Tag>> listTags(
+    Observable<List<MoeTag>> listTags(
             @Query("limit") Integer limit, @Query("page") Integer page, @Query("order") @Order String order,
             @Query("id") Integer id, @Query("after_id") Integer afterId, @Query("name") String name,
             @Query("name_pattern ") String namePattern);
@@ -110,7 +110,7 @@ public interface MoeApi {
      * @return list of artist
      */
     @GET("artist.json")
-    Observable<List<Artist>> listArtists(
+    Observable<List<MoeArtist>> listArtists(
             @Query("name") String name, @Query("order") String order, @Query("page") int page);
 
 
@@ -126,10 +126,9 @@ public interface MoeApi {
      */
 
     @GET("comment/show.json")
-    Observable<Comment> showComment(@Query("id") int id);
+    Observable<MoeComment> showComment(@Query("id") int id);
 
     /*
-     *Wiki
      *All titles must be exact (but case and whitespace don't matter).
      */
 
@@ -141,7 +140,7 @@ public interface MoeApi {
      * @return list of wiki
      */
     @GET("wiki.json")
-    Observable<List<Wiki>> listWiki(
+    Observable<List<MoeWiki>> listWiki(
             @Query("order") String order, @Query("limit") int limit, @Query("page") int page,
             @Query("query") String query);
 
