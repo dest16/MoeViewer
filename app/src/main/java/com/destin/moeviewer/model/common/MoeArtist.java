@@ -22,7 +22,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Artist {
+public class MoeArtist {
     /**
      * id : 22997
      * name : (stag)
@@ -75,16 +75,6 @@ public class Artist {
         return urls;
     }
 
-    @Override
-    public String toString() {
-        return "Artist{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", aliasId=" + aliasId +
-                ", groupId=" + groupId +
-                ", urls=" + urls +
-                '}';
-    }
 
     public void setUrls(List<String> urls) {
         this.urls = urls;

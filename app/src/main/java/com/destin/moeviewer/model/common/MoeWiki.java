@@ -20,7 +20,7 @@ package com.destin.moeviewer.model.common;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Wiki {
+public class MoeWiki {
     /**
      * id : 344
      * created_at : 2009-08-09T20:13:32.845Z
@@ -113,17 +113,5 @@ public class Wiki {
         this.version = version;
     }
 
-    @Override
-    public String toString() {
-        return "Wiki{" +
-                "id=" + id +
-                ", createdAt='" + createdAt + '\'' +
-                ", updatedAt=" + updatedAt +
-                ", title='" + title + '\'' +
-                ", body='" + body + '\'' +
-                ", updaterId=" + updaterId +
-                ", locked=" + locked +
-                ", version=" + version +
-                '}';
-    }
+
 }

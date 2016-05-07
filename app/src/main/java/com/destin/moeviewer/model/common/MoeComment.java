@@ -18,6 +18,6 @@
 
 package com.destin.moeviewer.model.common;
 
-public class Comment {
+public class MoeComment {
 
 }

@@ -18,7 +18,7 @@
 
 package com.destin.moeviewer.model.common;
 
-public class Tag {
+public class MoeTag {
 
     /**
      * id : 74678

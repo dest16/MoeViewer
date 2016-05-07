@@ -16,26 +16,20 @@
 
 package com.destin.moeviewer.data;
 
-import com.destin.moeviewer.BaseProvider;
-import com.destin.moeviewer.model.common.Post;
+public abstract class Post {
 
-import java.util.List;
+    public abstract long preRatio();
 
-import rx.Observable;
-import rx.functions.Func1;
+    public abstract String preUrl();
 
-public interface Provider extends BaseProvider {
-    int POST_LIMIT = 20;
+    public abstract String sampleUrl();
 
-    Func1<String, Observable<String[]>> getAutoCompleteFunc();
+    public abstract String rawUrl();
 
-    Observable.Transformer<Integer, List<Post>> getPostTrans();
+    public abstract String sourceUrl();
 
+    public abstract String[] tagArray();
 
-    Observable<List<Post>> getRecentPosts(int page);
-
-    Observable<List<Post>> getSearchPosts(int page, String tag);
-
-    Observable<String[]> getSuggestions(String tag);
+    public abstract CharSequence desc();
 
 }

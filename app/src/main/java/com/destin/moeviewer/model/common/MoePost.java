@@ -22,7 +22,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Post {
+public class MoePost {
 
     /**
      * id : 351739
