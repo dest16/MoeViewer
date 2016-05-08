@@ -45,14 +45,14 @@ public class PostsActivity extends AppCompatActivity
         navigationView.setItemIconTintList(null);
 
 
-        PostFragment postFragment = (PostFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_root);
+        PostsFragment postsFragment = (PostsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_root);
 
-        if (postFragment == null) {
-            postFragment = new PostFragment();
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_root, postFragment).commit();
+        if (postsFragment == null) {
+            postsFragment = new PostsFragment();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_root, postsFragment).commit();
         }
         // Create the presenter
-        mPostsPresenter = new PostsPresenter(postFragment, YandeRepository.getInstance());
+        mPostsPresenter = new PostsPresenter(postsFragment, YandeRepository.getInstance());
 //        // Load previously saved state, if available.
 //        if (savedInstanceState != null) {
 //            TasksFilterType currentFiltering =

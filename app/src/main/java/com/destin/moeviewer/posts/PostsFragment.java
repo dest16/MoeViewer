@@ -46,7 +46,7 @@ import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
 
-public class PostFragment extends BaseFragment
+public class PostsFragment extends BaseFragment
         implements PostsContract.View, RefreshLayout.OnRefreshListener,
         EasyRecyclerView.OnItemClickListener, EasyRecyclerView.OnItemLongClickListener,
         MaterialSearchView.OnQueryTextListener, Toolbar.OnMenuItemClickListener {
