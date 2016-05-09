@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-package com.destin.moeviewer.data.source;
+package com.destin.moeviewer.util;
 
-import com.destin.moeviewer.data.Post;
+import com.destin.moeviewer.network.LogInterceptor;
 
-import java.util.List;
+import okhttp3.OkHttpClient;
 
-import rx.Observable;
+public class MoeClient {
+    private static OkHttpClient sOkHttpClient;
 
-public interface MoeDataSource {
+    public static OkHttpClient getClient() {
+        if (sOkHttpClient == null)
+            initClient();
+        return sOkHttpClient;
+    }
 
-    Observable<List<Post>> getRecentPosts(int page);
 
-    public Observable<List<Post>> getSearchPosts(int page, String tag);
-
-    public Observable<String[]> getSuggestions(String tag);
+    private static void initClient() {
+        sOkHttpClient = new OkHttpClient.Builder().addInterceptor(new LogInterceptor()).build();
+    }
 }

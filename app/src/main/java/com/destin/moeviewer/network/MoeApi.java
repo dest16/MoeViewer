@@ -76,7 +76,7 @@ public interface MoeApi {
      */
     @GET("post.json")
     Observable<List<MoePost>> listPosts(
-            @Query("limit") int limit, @Query("page") int page, @Query("tags") String tags);
+            @Query("limit") int limit, @Query("page") int page, @Query(value = "tags", encoded = true) String tags);
 
     /*
      * Tags

@@ -26,10 +26,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.destin.moeviewer.BaseFragment;
 import com.destin.moeviewer.R;
 import com.destin.moeviewer.adapter.PostAdapter;
-import com.destin.moeviewer.model.common.MoePost;
-import com.destin.moeviewer.BaseFragment;
+import com.destin.moeviewer.data.Post;
 import com.destin.moeviewer.widget.MaterialSearchView;
 import com.destin.sehaikun.LayoutUtils;
 import com.destin.sehaikun.ResourceUtils;
@@ -145,7 +145,7 @@ public class PostsFragment extends BaseFragment
     }
 
     @Override
-    public void showPosts(List<MoePost> posts, boolean refresh) {
+    public void showPosts(List<Post> posts, boolean refresh) {
         if (refresh) {
             mAdapter.mList = posts;
             mAdapter.notifyDataSetChanged();
@@ -205,8 +205,6 @@ public class PostsFragment extends BaseFragment
 
     @Override
     public boolean onItemClick(EasyRecyclerView parent, View view, int position, long id) {
-
-
         return false;
     }
 

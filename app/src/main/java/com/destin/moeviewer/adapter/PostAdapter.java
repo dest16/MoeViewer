@@ -23,14 +23,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.destin.moeviewer.R;
-import com.destin.moeviewer.model.common.MoePost;
+import com.destin.moeviewer.data.Post;
 import com.destin.moeviewer.widget.StaggeredImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
-    public List<MoePost> mList;
+    public List<Post> mList;
 
     @Override
     public PostHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -41,13 +41,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
     @Override
     public void onBindViewHolder(PostHolder holder, int position) {
-        MoePost post = mList.get(position);
-        float ratio = (float) post.getPreviewHeight() / post.getPreviewWidth();
-        holder.image.setRatio(ratio);
-        holder.desc.setText(post.getTags());
-
+        Post post = mList.get(position);
+        holder.image.setRatio(post.getRatio());
+        holder.desc.setText(post.getDesc());
 //        Glide.with(holder.itemView.getContext()).load(mList.get(position).getPreviewUrl()).into(holder.image);
-        Picasso.with(holder.itemView.getContext()).load(mList.get(position).getPreviewUrl()).into(holder.image);
+        Picasso.with(holder.itemView.getContext()).load(mList.get(position).getPreUrl()).into(holder.image);
     }
 
     @Override

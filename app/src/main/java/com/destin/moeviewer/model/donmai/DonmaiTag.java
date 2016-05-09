@@ -22,15 +22,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class DonmaiTag {
     /**
-     * id : 1361966
-     * name : kiss_from_behind
-     * post_count : 1
-     * related_tags : null
-     * related_tags_updated_at : 2016-04-13T01:56:42.595-04:00
-     * category : 0
-     * created_at : 2016-04-13T03:45:24.934-04:00
-     * updated_at : 2016-04-13T03:45:24.934-04:00
-     * is_locked : false
+     * "id": 1357405,
+     * "name": "fate/extella",
+     * "post_count": 14,
+     * "related_tags": "fate/extra 14 fate/extella 14 fate_(series) 14 1girl 13 solo 10 caster_(fate/extra) 7 animal_ears 7 pink_hair 7 fox_ears 7 highres 7 looking_at_viewer 6 japanese_clothes 6 fox_tail 6 breasts 6 ribbon 6 long_hair 6 hair_ribbon 6 tail 6 yellow_eyes 6 smile 5 cleavage 5 detached_sleeves 5 brown_hair 4 yin_yang 4 blonde_hair 4",
+     * "related_tags_updated_at": "2016-05-08T20:47:55.443-04:00",
+     * "category": 3,
+     * "created_at": "2016-03-15T13:54:12.106-04:00",
+     * "updated_at": "2016-05-08T20:47:55.444-04:00",
+     * "is_locked": false
      */
 
     private int id;
@@ -38,7 +38,7 @@ public class DonmaiTag {
     @SerializedName("post_count")
     private int postCount;
     @SerializedName("related_tags")
-    private Object relatedTags;
+    private String relatedTags;
     @SerializedName("related_tags_updated_at")
     private String relatedTagsUpdatedAt;
     private int category;
@@ -73,11 +73,11 @@ public class DonmaiTag {
         this.postCount = postCount;
     }
 
-    public Object getRelatedTags() {
+    public String getRelatedTags() {
         return relatedTags;
     }
 
-    public void setRelatedTags(Object relatedTags) {
+    public void setRelatedTags(String relatedTags) {
         this.relatedTags = relatedTags;
     }
 

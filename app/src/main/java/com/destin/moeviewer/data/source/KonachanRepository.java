@@ -32,28 +32,26 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class YandeRepository implements MoeDataSource {
-    private static final String URL = "https://yande.re/";
+public class KonachanRepository implements MoeDataSource {
     private static final int POST_LIMIT = 20;
-    private static YandeRepository sRepository;
+    private static KonachanRepository sProvider;
     private MoeApi mMoeApi;
 
-    private YandeRepository() {
+    private KonachanRepository() {
         Retrofit retrofit = new Retrofit.Builder()
                 .client(MoeClient.getClient())
-                .baseUrl(URL)
+                .baseUrl("http://konachan.com/")
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         mMoeApi = retrofit.create(MoeApi.class);
     }
 
-    public static YandeRepository getInstance() {
-        if (sRepository == null)
-            sRepository = new YandeRepository();
-        return sRepository;
+    public static KonachanRepository getInstance() {
+        if (sProvider == null)
+            sProvider = new KonachanRepository();
+        return sProvider;
     }
-
 
     private final Func1<List<MoeTag>, String[]> tagsToArray = new Func1<List<MoeTag>, String[]>() {
         @Override
@@ -77,7 +75,7 @@ public class YandeRepository implements MoeDataSource {
                 temp.setRawUrl(post.getFileUrl());
                 temp.setTagArray(StringUtils.split(post.getTags(), "\b"));
                 temp.setSource(post.getSource());
-                temp.setDesc("yande.re");
+                temp.setDesc("konachan.com");
                 list.add(temp);
             }
             return list;

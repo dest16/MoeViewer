@@ -56,7 +56,7 @@ public interface DonmaiApi {
 
     /**
      * @param limit How many posts you want to retrieve. There is a hard limit of 100 posts per request.
-     * @param page  The page number.
+     * @param page  The page number,start with 1
      * @param tags  The tags to search for. Any tag combination that works on the web site will
      *              work here. This includes all the meta-tags.
      * @param raw   When this parameter is set the tags parameter will not be parsed for aliased
@@ -112,13 +112,13 @@ public interface DonmaiApi {
     */
 
     /**
-     * @param nameMatches
-     * @param category     Can be: 0, 1, 3, 4 (general, artist, copyright, character respectively)
+     * @param nameMatches should end with *
+     * @param category    Can be: 0, 1, 3, 4 (general, artist, copyright, character respectively)
      * @param hideEmpty   Can be: yes, no. Excludes tags with 0 posts when "yes".
-     * @param order        Can be: name, date, count
+     * @param order       Can be: name, date, count
      * @param hasWiki     Can be: yes, no
-     * @param name         Allows searching for multiple tags with exact given names, separated by commas.
-     *                     e.g. search[name]=touhou,original,k-on! would return the three listed tags.
+     * @param name        Allows searching for multiple tags with exact given names, separated by commas.
+     *                    e.g. search[name]=touhou,original,k-on! would return the three listed tags.
      * @return list of tags
      */
     @GET("tags.json")

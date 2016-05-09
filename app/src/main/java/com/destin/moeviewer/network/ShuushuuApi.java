@@ -19,6 +19,7 @@
 package com.destin.moeviewer.network;
 
 import com.destin.moeviewer.model.shuushuu.ShuushuuPost;
+import com.destin.moeviewer.model.shuushuu.ShuushuuResult;
 
 import java.util.List;
 
@@ -32,12 +33,12 @@ import rx.Observable;
  */
 public interface ShuushuuApi {
     /**
-     * @param page       the page number.(15 item per page)
+     * @param page       the page number.start with 1(15 item per page)
      * @param maxImageId the top post'id of the list(load more needed,first load obtain)
      * @return wrapped list of post (maybe has the parameter {@param maxImageId} )
      */
     @GET("app/index.php")
-    Observable<List<ShuushuuPost>> listPosts(@Query("page") int page, @Query("max_image_id") int maxImageId);
+    Observable<ShuushuuResult> listPosts(@Query("page") int page, @Query("max_image_id") Integer maxImageId);
 
 
     /**

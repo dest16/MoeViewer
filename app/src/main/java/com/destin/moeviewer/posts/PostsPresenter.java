@@ -20,8 +20,8 @@ package com.destin.moeviewer.posts;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.destin.moeviewer.data.Post;
 import com.destin.moeviewer.data.source.MoeDataSource;
-import com.destin.moeviewer.model.common.MoePost;
 import com.destin.moeviewer.util.SchedulersCompat;
 import com.destin.sehaikun.StringUtils;
 
@@ -53,16 +53,16 @@ public class PostsPresenter implements PostsContract.Presenter {
         unsubscription(mPostsSubscription);
         if (StringUtils.isEmpty(tag)) {
             mPostsSubscription = mDataSource.getRecentPosts(refresh ? mPage = 0 : ++mPage)
-                    .compose(SchedulersCompat.<List<MoePost>>applyIoSchedulers())
+                    .compose(SchedulersCompat.<List<Post>>applyIoSchedulers())
                     .doAfterTerminate(new Action0() {
                         @Override
                         public void call() {
                             mPostsView.completeLoadPosts(refresh);
                         }
                     })
-                    .subscribe(new Action1<List<MoePost>>() {
+                    .subscribe(new Action1<List<Post>>() {
                         @Override
-                        public void call(List<MoePost> posts) {
+                        public void call(List<Post> posts) {
                             mPostsView.showPosts(posts, refresh);
                         }
                     }, new Action1<Throwable>() {
@@ -74,16 +74,16 @@ public class PostsPresenter implements PostsContract.Presenter {
             mSubscriptions.add(mPostsSubscription);
         } else {
             mPostsSubscription = mDataSource.getSearchPosts(refresh ? mPage = 0 : ++mPage, tag)
-                    .compose(SchedulersCompat.<List<MoePost>>applyIoSchedulers())
+                    .compose(SchedulersCompat.<List<Post>>applyIoSchedulers())
                     .doAfterTerminate(new Action0() {
                         @Override
                         public void call() {
                             mPostsView.completeLoadPosts(refresh);
                         }
                     })
-                    .subscribe(new Action1<List<MoePost>>() {
+                    .subscribe(new Action1<List<Post>>() {
                         @Override
-                        public void call(List<MoePost> posts) {
+                        public void call(List<Post> posts) {
                             mPostsView.showPosts(posts, refresh);
                         }
                     }, new Action1<Throwable>() {

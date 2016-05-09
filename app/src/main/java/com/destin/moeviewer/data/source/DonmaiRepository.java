@@ -17,9 +17,9 @@
 package com.destin.moeviewer.data.source;
 
 import com.destin.moeviewer.data.Post;
-import com.destin.moeviewer.model.common.MoePost;
-import com.destin.moeviewer.model.common.MoeTag;
-import com.destin.moeviewer.network.MoeApi;
+import com.destin.moeviewer.model.donmai.DonmaiPost;
+import com.destin.moeviewer.model.donmai.DonmaiTag;
+import com.destin.moeviewer.network.DonmaiApi;
 import com.destin.moeviewer.util.MoeClient;
 import com.destin.sehaikun.StringUtils;
 
@@ -32,52 +32,44 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class YandeRepository implements MoeDataSource {
-    private static final String URL = "https://yande.re/";
+public class DonmaiRepository implements MoeDataSource {
+    private static final String URL = "http://danbooru.donmai.us/";
     private static final int POST_LIMIT = 20;
-    private static YandeRepository sRepository;
-    private MoeApi mMoeApi;
+    private static DonmaiRepository sRepository;
+    private DonmaiApi mDonmaiApi;
 
-    private YandeRepository() {
+    private DonmaiRepository() {
         Retrofit retrofit = new Retrofit.Builder()
                 .client(MoeClient.getClient())
                 .baseUrl(URL)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        mMoeApi = retrofit.create(MoeApi.class);
+        mDonmaiApi = retrofit.create(DonmaiApi.class);
     }
 
-    public static YandeRepository getInstance() {
-        if (sRepository == null)
-            sRepository = new YandeRepository();
-        return sRepository;
-    }
-
-
-    private final Func1<List<MoeTag>, String[]> tagsToArray = new Func1<List<MoeTag>, String[]>() {
+    private final Func1<List<DonmaiTag>, String[]> tagsToArray = new Func1<List<DonmaiTag>, String[]>() {
         @Override
-        public String[] call(List<MoeTag> tags) {
-            String[] array = new String[tags.size()];
+        public String[] call(List<DonmaiTag> donmaiTags) {
+            String[] array = new String[donmaiTags.size()];
             for (int i = 0; i < array.length; i++)
-                array[i] = tags.get(i).getName();
+                array[i] = donmaiTags.get(i).getName();
             return array;
         }
     };
-
-    private final Func1<List<MoePost>, List<Post>> toPostFunc = new Func1<List<MoePost>, List<Post>>() {
+    private final Func1<List<DonmaiPost>, List<Post>> toPostsFunc = new Func1<List<DonmaiPost>, List<Post>>() {
         @Override
-        public List<Post> call(List<MoePost> moePosts) {
-            List<Post> list = new ArrayList<>(moePosts.size());
-            for (MoePost post : moePosts) {
+        public List<Post> call(List<DonmaiPost> donmaiPosts) {
+            List<Post> list = new ArrayList<>(donmaiPosts.size());
+            for (DonmaiPost post : donmaiPosts) {
                 Post temp = new Post();
-                temp.setRatio((float) post.getPreviewHeight() / post.getPreviewWidth());
-                temp.setPreUrl(post.getPreviewUrl());
-                temp.setSampleUrl(post.getSampleUrl());
-                temp.setRawUrl(post.getFileUrl());
-                temp.setTagArray(StringUtils.split(post.getTags(), "\b"));
+                temp.setRatio((float) post.getImageHeight() / post.getImageWidth());
+                temp.setPreUrl(URL + post.getPreviewFileUrl());
+                temp.setSampleUrl(URL + post.getLargeFileUrl());
+                temp.setRawUrl(URL + post.getFileUrl());
+                temp.setTagArray(StringUtils.split(post.getTagString(), "\b"));
                 temp.setSource(post.getSource());
-                temp.setDesc("yande.re");
+                temp.setDesc("donmai.us");
                 list.add(temp);
             }
             return list;
@@ -87,17 +79,17 @@ public class YandeRepository implements MoeDataSource {
 
     @Override
     public Observable<List<Post>> getRecentPosts(int page) {
-        return mMoeApi.listPosts(POST_LIMIT, page + 1, null).map(toPostFunc);
+        return mDonmaiApi.listPosts(POST_LIMIT, page + 1, null, null).map(toPostsFunc);
     }
 
     @Override
     public Observable<List<Post>> getSearchPosts(int page, String tag) {
-        return mMoeApi.listPosts(POST_LIMIT, page + 1, StringUtils.encode(tag)).map(toPostFunc);
+        return mDonmaiApi.listPosts(POST_LIMIT, page + 1, tag + "*", null).map(toPostsFunc);
     }
 
     @Override
     public Observable<String[]> getSuggestions(String tag) {
-        return mMoeApi.listTags(8, null, MoeApi.COUNT, null, null, tag + "*", null).map(tagsToArray);
-    }
+        return mDonmaiApi.autoTags(tag + "*").map(tagsToArray);
 
+    }
 }

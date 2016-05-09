@@ -16,20 +16,70 @@
 
 package com.destin.moeviewer.data;
 
-public abstract class Post {
+public class Post {
 
-    public abstract long preRatio();
+    private float ratio;
+    private String preUrl;
+    private String sampleUrl;
+    private String rawUrl;
+    private String source;
+    private String[] tagArray;
+    private CharSequence desc;
 
-    public abstract String preUrl();
 
-    public abstract String sampleUrl();
+    public float getRatio() {
+        return ratio;
+    }
 
-    public abstract String rawUrl();
+    public void setRatio(float ratio) {
+        this.ratio = ratio;
+    }
 
-    public abstract String sourceUrl();
+    public String getPreUrl() {
+        return preUrl;
+    }
 
-    public abstract String[] tagArray();
+    public void setPreUrl(String preUrl) {
+        this.preUrl = preUrl;
+    }
 
-    public abstract CharSequence desc();
+    public String getSampleUrl() {
+        return sampleUrl;
+    }
 
+    public void setSampleUrl(String sampleUrl) {
+        this.sampleUrl = sampleUrl;
+    }
+
+    public String getRawUrl() {
+        return rawUrl;
+    }
+
+    public void setRawUrl(String rawUrl) {
+        this.rawUrl = rawUrl;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String[] getTagArray() {
+        return tagArray;
+    }
+
+    public void setTagArray(String[] tagArray) {
+        this.tagArray = tagArray;
+    }
+
+    public CharSequence getDesc() {
+        return desc;
+    }
+
+    public void setDesc(CharSequence desc) {
+        this.desc = desc;
+    }
 }

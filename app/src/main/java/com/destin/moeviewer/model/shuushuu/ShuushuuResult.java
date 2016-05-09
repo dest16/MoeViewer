@@ -14,19 +14,31 @@
  * limitations under the License.
  */
 
-package com.destin.moeviewer.data.source;
+package com.destin.moeviewer.model.shuushuu;
 
-import com.destin.moeviewer.data.Post;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import rx.Observable;
+public class ShuushuuResult {
+    @SerializedName("max_image_id")
+    private int maxImageId;
 
-public interface MoeDataSource {
+    private List<ShuushuuPost> images;
 
-    Observable<List<Post>> getRecentPosts(int page);
+    public int getMaxImageId() {
+        return maxImageId;
+    }
 
-    public Observable<List<Post>> getSearchPosts(int page, String tag);
+    public void setMaxImageId(int maxImageId) {
+        this.maxImageId = maxImageId;
+    }
 
-    public Observable<String[]> getSuggestions(String tag);
+    public List<ShuushuuPost> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ShuushuuPost> images) {
+        this.images = images;
+    }
 }
