@@ -34,7 +34,7 @@ import rx.functions.Func1;
 
 public class KonachanRepository implements MoeDataSource {
     private static final int POST_LIMIT = 20;
-    private static KonachanRepository sProvider;
+    private static KonachanRepository sRepository;
     private MoeApi mMoeApi;
 
     private KonachanRepository() {
@@ -48,9 +48,9 @@ public class KonachanRepository implements MoeDataSource {
     }
 
     public static KonachanRepository getInstance() {
-        if (sProvider == null)
-            sProvider = new KonachanRepository();
-        return sProvider;
+        if (sRepository == null)
+            sRepository = new KonachanRepository();
+        return sRepository;
     }
 
     private final Func1<List<MoeTag>, String[]> tagsToArray = tags -> {

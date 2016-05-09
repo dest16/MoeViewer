@@ -49,6 +49,12 @@ public class ShuushuuRepository implements MoeDataSource {
         mShuushuuApi = retrofit.create(ShuushuuApi.class);
     }
 
+    public static ShuushuuRepository getInstance() {
+        if (sRepository == null)
+            sRepository = new ShuushuuRepository();
+        return sRepository;
+    }
+
     private final Func1<ShuushuuResult, List<Post>> toPostFun = shuushuuResult -> {
         List<ShuushuuPost> shuuList = shuushuuResult.getImages();
         List<Post> list = new ArrayList<>(shuuList.size());

@@ -52,7 +52,7 @@ public interface BooruApi {
     @GET("index.php?page=dapi&s=post&q=index")
     Observable<List<BooruPost>> listPosts(
             @Query("limit") int limit, @Query("pid") int pid, @Query("tags") String tags,
-            @Query("cid") int cid, @Query("id") int id);
+            @Query("cid") Integer cid, @Query("id") Integer id);
 
     /**
      * @param postId The id number of the comment to retrieve.

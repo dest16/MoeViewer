@@ -91,7 +91,7 @@ public class YandeRepository implements MoeDataSource {
 
     @Override
     public Observable<String[]> getSuggestions(String tag) {
-        return mMoeApi.listTags(URL,8, null, MoeApi.COUNT, null, null, tag + "*", null).map(tagsToArray);
+        return mMoeApi.listTags(8, null, MoeApi.COUNT, null, null, tag + "*", null).map(tagsToArray);
     }
 
 }

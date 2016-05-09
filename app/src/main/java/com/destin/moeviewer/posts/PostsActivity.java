@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.destin.moeviewer.R;
+import com.destin.moeviewer.data.source.ShuushuuRepository;
 import com.destin.moeviewer.data.source.YandeRepository;
 import com.destin.sehaikun.AssertUtils;
 
@@ -52,7 +53,7 @@ public class PostsActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_root, postsFragment).commit();
         }
         // Create the presenter
-        mPostsPresenter = new PostsPresenter(postsFragment, YandeRepository.getInstance());
+        mPostsPresenter = new PostsPresenter(postsFragment, ShuushuuRepository.getInstance());
 //        // Load previously saved state, if available.
 //        if (savedInstanceState != null) {
 //            TasksFilterType currentFiltering =
@@ -83,6 +84,19 @@ public class PostsActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         setTitle(item.getTitle());
 
+        switch (item.getItemId()) {
+            case R.id.nav_yande:
+                mPostsPresenter.setProvider(YandeRepository.getInstance());
+                break;
+            case R.id.nav_konachan:
+                break;
+            case R.id.nav_donmai:
+                break;
+            case R.id.nav_safebooru:
+                break;
+            case R.id.nav_shuushuu:
+                break;
+        }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }

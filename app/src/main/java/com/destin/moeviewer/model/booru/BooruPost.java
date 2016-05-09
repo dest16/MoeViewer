@@ -20,6 +20,9 @@ package com.destin.moeviewer.model.booru;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.simpleframework.xml.Root;
+
+@Root()
 public class BooruPost {
 
 

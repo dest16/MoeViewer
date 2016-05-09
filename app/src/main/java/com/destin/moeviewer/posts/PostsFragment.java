@@ -83,7 +83,7 @@ public class PostsFragment extends BaseFragment
         int barSize = ResourceUtils.getAttrValue(getContext(), android.R.attr.actionBarSize);
         mRefreshLayout.setHeaderTranslationY(barSize);
 
-        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setClipToPadding(false);
         int padding = LayoutUtils.dp2pix(getContext(), 4);

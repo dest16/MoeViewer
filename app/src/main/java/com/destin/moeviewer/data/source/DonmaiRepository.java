@@ -48,6 +48,13 @@ public class DonmaiRepository implements MoeDataSource {
         mDonmaiApi = retrofit.create(DonmaiApi.class);
     }
 
+    public static DonmaiRepository getInstance() {
+        if (sRepository == null)
+            sRepository = new DonmaiRepository();
+        return sRepository;
+    }
+
+
     private final Func1<List<DonmaiTag>, String[]> tagsToArray = donmaiTags -> {
         String[] array = new String[donmaiTags.size()];
         for (int i = 0; i < array.length; i++)

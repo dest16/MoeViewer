@@ -33,10 +33,10 @@
             android:id="@+id/nav_donmai"
             android:icon="@mipmap/ic_donmai"
             android:title="@string/donmai_menu_title"/>
-        <!--<item-->
-            <!--android:id="@+id/nav_safebooru"-->
-            <!--android:icon="@mipmap/ic_safebooru"-->
-            <!--android:title="@string/safebooru_menu_title"/>-->
+        <item
+            android:id="@+id/nav_safebooru"
+            android:icon="@mipmap/ic_safebooru"
+            android:title="@string/safebooru_menu_title" />
         <!--<item-->
         <!--android:id="@+id/nav_gelbooru"-->
         <!--android:title="@string/gelbooru_menu_title"/>-->
