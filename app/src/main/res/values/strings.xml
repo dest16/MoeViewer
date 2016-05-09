@@ -11,7 +11,7 @@
     <string name="safebooru_menu_title">safebooru.org</string>
     <string name="gelbooru_menu_title">gelbooru.com</string>
     <string name="shuushuu_menu_title">e-shuushuu.net</string>
-    <string name="zerochan_menu_title">e-shuushuu.net</string>
+    <string name="zerochan_menu_title">zerochan.net</string>
     <string name="minitokyo_menu_title">minitokyo.net</string>
 
     <string name="search_hint">search&#8230;</string>

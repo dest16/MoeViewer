@@ -53,33 +53,27 @@ public class KonachanRepository implements MoeDataSource {
         return sProvider;
     }
 
-    private final Func1<List<MoeTag>, String[]> tagsToArray = new Func1<List<MoeTag>, String[]>() {
-        @Override
-        public String[] call(List<MoeTag> tags) {
-            String[] array = new String[tags.size()];
-            for (int i = 0; i < array.length; i++)
-                array[i] = tags.get(i).getName();
-            return array;
-        }
+    private final Func1<List<MoeTag>, String[]> tagsToArray = tags -> {
+        String[] array = new String[tags.size()];
+        for (int i = 0; i < array.length; i++)
+            array[i] = tags.get(i).getName();
+        return array;
     };
 
-    private final Func1<List<MoePost>, List<Post>> toPostFunc = new Func1<List<MoePost>, List<Post>>() {
-        @Override
-        public List<Post> call(List<MoePost> moePosts) {
-            List<Post> list = new ArrayList<>(moePosts.size());
-            for (MoePost post : moePosts) {
-                Post temp = new Post();
-                temp.setRatio((float) post.getPreviewHeight() / post.getPreviewWidth());
-                temp.setPreUrl(post.getPreviewUrl());
-                temp.setSampleUrl(post.getSampleUrl());
-                temp.setRawUrl(post.getFileUrl());
-                temp.setTagArray(StringUtils.split(post.getTags(), "\b"));
-                temp.setSource(post.getSource());
-                temp.setDesc("konachan.com");
-                list.add(temp);
-            }
-            return list;
+    private final Func1<List<MoePost>, List<Post>> toPostFunc = moePosts -> {
+        List<Post> list = new ArrayList<>(moePosts.size());
+        for (MoePost post : moePosts) {
+            Post temp = new Post();
+            temp.setRatio((float) post.getPreviewHeight() / post.getPreviewWidth());
+            temp.setPreUrl(post.getPreviewUrl());
+            temp.setSampleUrl(post.getSampleUrl());
+            temp.setRawUrl(post.getFileUrl());
+            temp.setTagArray(StringUtils.split(post.getTags(), "\b"));
+            temp.setSource(post.getSource());
+            temp.setDesc("konachan.com");
+            list.add(temp);
         }
+        return list;
     };
 
 

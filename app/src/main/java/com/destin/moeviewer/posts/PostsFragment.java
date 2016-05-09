@@ -41,8 +41,6 @@ import com.hippo.refreshlayout.RefreshLayout;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
 
@@ -106,26 +104,13 @@ public class PostsFragment extends BaseFragment
         mSuggestSubject = PublishSubject.create();
         mSuggestSubject
                 .debounce(500, TimeUnit.MILLISECONDS)
-                .filter(new Func1<String, Boolean>() {
-                    @Override
-                    public Boolean call(String s) {
-                        return !StringUtils.isEmpty(s);
-                    }
-                })
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        mPresenter.loadSuggestions(s);
-                    }
+                .filter(s -> !StringUtils.isEmpty(s))
+                .subscribe(s -> {
+                    mPresenter.loadSuggestions(s);
                 });
 
         mPresenter.subscribe();
-        mRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mRefreshLayout.setHeaderRefreshing(true);
-            }
-        });
+        mRefreshLayout.post(() -> mRefreshLayout.setHeaderRefreshing(true));
         mPresenter.loadPosts(true, getSearchText());
     }
 

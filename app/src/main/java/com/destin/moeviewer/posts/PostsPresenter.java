@@ -28,8 +28,6 @@ import com.destin.sehaikun.StringUtils;
 import java.util.List;
 
 import rx.Subscription;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 public class PostsPresenter implements PostsContract.Presenter {
@@ -54,43 +52,21 @@ public class PostsPresenter implements PostsContract.Presenter {
         if (StringUtils.isEmpty(tag)) {
             mPostsSubscription = mDataSource.getRecentPosts(refresh ? mPage = 0 : ++mPage)
                     .compose(SchedulersCompat.<List<Post>>applyIoSchedulers())
-                    .doAfterTerminate(new Action0() {
-                        @Override
-                        public void call() {
-                            mPostsView.completeLoadPosts(refresh);
-                        }
-                    })
-                    .subscribe(new Action1<List<Post>>() {
-                        @Override
-                        public void call(List<Post> posts) {
-                            mPostsView.showPosts(posts, refresh);
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            mPostsView.showError(throwable.getClass().getName());
-                        }
+                    .doAfterTerminate(() -> mPostsView.completeLoadPosts(refresh))
+                    .subscribe(posts -> {
+                        mPostsView.showPosts(posts, refresh);
+                    }, throwable -> {
+                        mPostsView.showError(throwable.getClass().getName());
                     });
             mSubscriptions.add(mPostsSubscription);
         } else {
             mPostsSubscription = mDataSource.getSearchPosts(refresh ? mPage = 0 : ++mPage, tag)
                     .compose(SchedulersCompat.<List<Post>>applyIoSchedulers())
-                    .doAfterTerminate(new Action0() {
-                        @Override
-                        public void call() {
-                            mPostsView.completeLoadPosts(refresh);
-                        }
-                    })
-                    .subscribe(new Action1<List<Post>>() {
-                        @Override
-                        public void call(List<Post> posts) {
-                            mPostsView.showPosts(posts, refresh);
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            mPostsView.showError(throwable.getClass().getName());
-                        }
+                    .doAfterTerminate(() -> mPostsView.completeLoadPosts(refresh))
+                    .subscribe(posts -> {
+                        mPostsView.showPosts(posts, refresh);
+                    }, throwable -> {
+                        mPostsView.showError(throwable.getClass().getName());
                     });
             mSubscriptions.add(mPostsSubscription);
         }
@@ -102,16 +78,8 @@ public class PostsPresenter implements PostsContract.Presenter {
         unsubscription(mSuggestSubscription);
         mSuggestSubscription = mDataSource.getSuggestions(text)
                 .compose(SchedulersCompat.<String[]>applyIoSchedulers())
-                .subscribe(new Action1<String[]>() {
-                    @Override
-                    public void call(String[] strings) {
-                        mPostsView.showSuggestions(strings);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mPostsView.showError(throwable.getClass().getName());
-                    }
+                .subscribe(mPostsView::showSuggestions, throwable -> {
+                    mPostsView.showError(throwable.getClass().getName());
                 });
         mSubscriptions.add(mSuggestSubscription);
     }

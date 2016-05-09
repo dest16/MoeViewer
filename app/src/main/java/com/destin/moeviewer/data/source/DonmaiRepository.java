@@ -48,32 +48,26 @@ public class DonmaiRepository implements MoeDataSource {
         mDonmaiApi = retrofit.create(DonmaiApi.class);
     }
 
-    private final Func1<List<DonmaiTag>, String[]> tagsToArray = new Func1<List<DonmaiTag>, String[]>() {
-        @Override
-        public String[] call(List<DonmaiTag> donmaiTags) {
-            String[] array = new String[donmaiTags.size()];
-            for (int i = 0; i < array.length; i++)
-                array[i] = donmaiTags.get(i).getName();
-            return array;
-        }
+    private final Func1<List<DonmaiTag>, String[]> tagsToArray = donmaiTags -> {
+        String[] array = new String[donmaiTags.size()];
+        for (int i = 0; i < array.length; i++)
+            array[i] = donmaiTags.get(i).getName();
+        return array;
     };
-    private final Func1<List<DonmaiPost>, List<Post>> toPostsFunc = new Func1<List<DonmaiPost>, List<Post>>() {
-        @Override
-        public List<Post> call(List<DonmaiPost> donmaiPosts) {
-            List<Post> list = new ArrayList<>(donmaiPosts.size());
-            for (DonmaiPost post : donmaiPosts) {
-                Post temp = new Post();
-                temp.setRatio((float) post.getImageHeight() / post.getImageWidth());
-                temp.setPreUrl(URL + post.getPreviewFileUrl());
-                temp.setSampleUrl(URL + post.getLargeFileUrl());
-                temp.setRawUrl(URL + post.getFileUrl());
-                temp.setTagArray(StringUtils.split(post.getTagString(), "\b"));
-                temp.setSource(post.getSource());
-                temp.setDesc("donmai.us");
-                list.add(temp);
-            }
-            return list;
+    private final Func1<List<DonmaiPost>, List<Post>> toPostsFunc = donmaiPosts -> {
+        List<Post> list = new ArrayList<>(donmaiPosts.size());
+        for (DonmaiPost post : donmaiPosts) {
+            Post temp = new Post();
+            temp.setRatio((float) post.getImageHeight() / post.getImageWidth());
+            temp.setPreUrl(URL + post.getPreviewFileUrl());
+            temp.setSampleUrl(URL + post.getLargeFileUrl());
+            temp.setRawUrl(URL + post.getFileUrl());
+            temp.setTagArray(StringUtils.split(post.getTagString(), "\b"));
+            temp.setSource(post.getSource());
+            temp.setDesc("donmai.us");
+            list.add(temp);
         }
+        return list;
     };
 
 

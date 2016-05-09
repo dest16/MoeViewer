@@ -49,24 +49,21 @@ public class ShuushuuRepository implements MoeDataSource {
         mShuushuuApi = retrofit.create(ShuushuuApi.class);
     }
 
-    private final Func1<ShuushuuResult, List<Post>> toPostFun = new Func1<ShuushuuResult, List<Post>>() {
-        @Override
-        public List<Post> call(ShuushuuResult shuushuuResult) {
-            List<ShuushuuPost> shuuList = shuushuuResult.getImages();
-            List<Post> list = new ArrayList<>(shuuList.size());
-            for (ShuushuuPost post : shuuList) {
-                Post temp = new Post();
-                temp.setRatio((long) post.getThumbHeight() / post.getThumbWidth());
-                temp.setPreUrl(String.format(pre_format, post.getFilename()));
-                temp.setSampleUrl(temp.getPreUrl());
-                temp.setRawUrl(String.format(raw_format, post.getFilename(), post.getExt()));
+    private final Func1<ShuushuuResult, List<Post>> toPostFun = shuushuuResult -> {
+        List<ShuushuuPost> shuuList = shuushuuResult.getImages();
+        List<Post> list = new ArrayList<>(shuuList.size());
+        for (ShuushuuPost post : shuuList) {
+            Post temp = new Post();
+            temp.setRatio((long) post.getThumbHeight() / post.getThumbWidth());
+            temp.setPreUrl(String.format(pre_format, post.getFilename()));
+            temp.setSampleUrl(temp.getPreUrl());
+            temp.setRawUrl(String.format(raw_format, post.getFilename(), post.getExt()));
 //                    temp.setTagArray();
 //                    temp.setSource();
-                temp.setDesc("e-shuushuu.net");
-                list.add(temp);
-            }
-            return list;
+            temp.setDesc("e-shuushuu.net");
+            list.add(temp);
         }
+        return list;
     };
 
     @Override
