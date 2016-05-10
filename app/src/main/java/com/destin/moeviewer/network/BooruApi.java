@@ -19,9 +19,7 @@
 package com.destin.moeviewer.network;
 
 import com.destin.moeviewer.model.booru.BooruComment;
-import com.destin.moeviewer.model.booru.BooruPost;
-
-import java.util.List;
+import com.destin.moeviewer.model.booru.BooruList;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -50,7 +48,7 @@ public interface BooruApi {
      * @return list of post
      */
     @GET("index.php?page=dapi&s=post&q=index")
-    Observable<List<BooruPost>> listPosts(
+    Observable<BooruList> listPosts(
             @Query("limit") int limit, @Query("pid") int pid, @Query("tags") String tags,
             @Query("cid") Integer cid, @Query("id") Integer id);
 

@@ -35,7 +35,7 @@ public interface ZeroChanApi {
      * @param p the page number (start with 1)
      * @return raw html
      */
-    @GET
+    @GET("/")
     Observable<String> listPosts(@Query("s") String s, @Query("p") int p);
 
     /**

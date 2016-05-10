@@ -44,10 +44,10 @@
             android:id="@+id/nav_shuushuu"
             android:icon="@mipmap/ic_shushu"
             android:title="@string/shuushuu_menu_title"/>
-        <!--<item-->
-            <!--android:id="@+id/nav_zerochan"-->
-            <!--android:icon="@mipmap/ic_zerochan"-->
-            <!--android:title="@string/zerochan_menu_title"/>-->
+        <item
+            android:id="@+id/nav_zerochan"
+            android:icon="@mipmap/ic_zerochan"
+            android:title="@string/zerochan_menu_title"/>
         <!--<item-->
             <!--android:id="@+id/nav_monitokyo"-->
             <!--android:icon="@mipmap/ic_minitokyo"-->

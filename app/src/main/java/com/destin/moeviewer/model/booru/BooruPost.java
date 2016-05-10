@@ -18,11 +18,10 @@
 
 package com.destin.moeviewer.model.booru;
 
-import com.google.gson.annotations.SerializedName;
-
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Root;
 
-@Root()
+@Root(name = "post")
 public class BooruPost {
 
 
@@ -53,42 +52,51 @@ public class BooruPost {
      * preview_width : 138
      * preview_height : 150
      */
-
+    @Attribute
     private int height;
+    @Attribute
     private int score;
-    @SerializedName("file_url")
+    @Attribute(name = "file_url")
     private String fileUrl;
-    @SerializedName("parent_id")
-    private int parentId;
-    @SerializedName("sample_url")
+    @Attribute(name = "parent_id")
+    private String parentId;
+    @Attribute(name = "sample_url")
     private String sampleUrl;
-    @SerializedName("sample_width")
+    @Attribute(name = "sample_width")
     private int sampleWidth;
-    @SerializedName("sample_height")
+    @Attribute(name = "sample_height")
     private int sampleHeight;
-    @SerializedName("preview_url")
+    @Attribute(name = "preview_url")
     private String previewUrl;
+    @Attribute
     private String rating;
+    @Attribute
     private String tags;
+    @Attribute
     private int id;
+    @Attribute
     private int width;
+    @Attribute
     private int change;
+    @Attribute
     private String md5;
-    @SerializedName("creator_id")
+    @Attribute(name = "creator_id")
     private int creatorId;
-    @SerializedName("has_children")
+    @Attribute(name = "has_children")
     private boolean hasChildren;
-    @SerializedName("created_at")
+    @Attribute(name = "created_at")
     private String createdAt;
+    @Attribute
     private String status;
+    @Attribute
     private String source;
-    @SerializedName("has_notes")
+    @Attribute(name = "has_notes")
     private boolean hasNotes;
-    @SerializedName("has_comments")
+    @Attribute(name = "has_comments")
     private boolean hasComments;
-    @SerializedName("preview_width")
+    @Attribute(name = "preview_width")
     private int previewWidth;
-    @SerializedName("preview_height")
+    @Attribute(name = "preview_height")
     private int previewHeight;
 
     public int getHeight() {
@@ -115,11 +123,11 @@ public class BooruPost {
         this.fileUrl = fileUrl;
     }
 
-    public int getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(int parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 

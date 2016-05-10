@@ -11,7 +11,6 @@ android {
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
-
         jackOptions {
             enabled true
         }
@@ -25,7 +24,7 @@ android {
     lintOptions {
         abortOnError true
     }
-    
+
     buildTypes {
         release {
             minifyEnabled false
@@ -49,7 +48,8 @@ dependencies {
     compile 'org.jsoup:jsoup:1.8.3'
     compile 'com.github.seven332:refreshlayout:0.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile("com.squareup.retrofit2:converter-simplexml:2.0.2") {
+    compile 'com.squareup.retrofit2:converter-scalars:2.0.2'
+    compile('com.squareup.retrofit2:converter-simplexml:2.0.2') {
         exclude module: 'stax'
         exclude module: 'stax-api'
         exclude module: 'xpp3'

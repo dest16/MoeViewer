@@ -42,6 +42,12 @@ public interface PostsContract {
 
         void showSuggestions(String[] suggests);
 
+        void showTitle();
+
+        void showSubTitle(String title);
+
+        void setLoadingIndicator(boolean active);
+
         void showError(String error);
 
         void showPostsShown();

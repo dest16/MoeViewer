@@ -20,7 +20,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ShuushuuResult {
+public class ShuushuuList {
     @SerializedName("max_image_id")
     private int maxImageId;
 

@@ -18,7 +18,7 @@ package com.destin.moeviewer.data.source;
 
 import com.destin.moeviewer.data.Post;
 import com.destin.moeviewer.model.shuushuu.ShuushuuPost;
-import com.destin.moeviewer.model.shuushuu.ShuushuuResult;
+import com.destin.moeviewer.model.shuushuu.ShuushuuList;
 import com.destin.moeviewer.network.ShuushuuApi;
 import com.destin.moeviewer.util.MoeClient;
 
@@ -55,15 +55,15 @@ public class ShuushuuRepository implements MoeDataSource {
         return sRepository;
     }
 
-    private final Func1<ShuushuuResult, List<Post>> toPostFun = shuushuuResult -> {
+    private final Func1<ShuushuuList, List<Post>> toPostFun = shuushuuResult -> {
         List<ShuushuuPost> shuuList = shuushuuResult.getImages();
         List<Post> list = new ArrayList<>(shuuList.size());
         for (ShuushuuPost post : shuuList) {
             Post temp = new Post();
-            temp.setRatio((long) post.getThumbHeight() / post.getThumbWidth());
-            temp.setPreUrl(String.format(pre_format, post.getFilename()));
+            temp.setRatio((float) post.getThumbHeight() / post.getThumbWidth());
+            temp.setPreUrl(String.format(URL + pre_format, post.getFilename()));
             temp.setSampleUrl(temp.getPreUrl());
-            temp.setRawUrl(String.format(raw_format, post.getFilename(), post.getExt()));
+            temp.setRawUrl(String.format(URL + raw_format, post.getFilename(), post.getExt()));
 //                    temp.setTagArray();
 //                    temp.setSource();
             temp.setDesc("e-shuushuu.net");

@@ -18,7 +18,6 @@ package com.destin.moeviewer.posts;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -63,19 +62,13 @@ public class PostsFragment extends BaseFragment
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
     public void onViewCreated2(Bundle savedInstanceState) {
         mRefreshLayout = $(R.id.refresh_layout);
         mRecyclerView = $(R.id.recycler_view);
         mToolbar = $(R.id.toolbar);
         mSearchView = $(R.id.search_view);
 
-        mToolbar.setTitle(getActivity().getTitle());
+        mToolbar.setNavigationIcon(R.drawable.ic_menu);
         mToolbar.inflateMenu(R.menu.main);
         mToolbar.setOnMenuItemClickListener(this);
         mRefreshLayout.setHeaderColorSchemeResources(R.color.red_500, R.color.yellow_500, R.color.blue_500, R.color.green_500);
@@ -83,7 +76,7 @@ public class PostsFragment extends BaseFragment
         int barSize = ResourceUtils.getAttrValue(getContext(), android.R.attr.actionBarSize);
         mRefreshLayout.setHeaderTranslationY(barSize);
 
-        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setClipToPadding(false);
         int padding = LayoutUtils.dp2pix(getContext(), 4);
@@ -110,8 +103,8 @@ public class PostsFragment extends BaseFragment
                 });
 
         mPresenter.subscribe();
-        mRefreshLayout.post(() -> mRefreshLayout.setHeaderRefreshing(true));
-        mPresenter.loadPosts(true, getSearchText());
+//        mRefreshLayout.post(() -> mRefreshLayout.setHeaderRefreshing(true));
+//        mPresenter.loadPosts(true, getSearchText());
     }
 
     @Override
@@ -150,6 +143,23 @@ public class PostsFragment extends BaseFragment
     @Override
     public void showSuggestions(String[] suggests) {
         mSearchView.setSuggestions(suggests);
+    }
+
+    @Override
+    public void showTitle() {
+        mToolbar.setTitle(getActivity().getTitle());
+    }
+
+    @Override
+    public void showSubTitle(String title) {
+        mToolbar.setSubtitle(title);
+    }
+
+    @Override
+    public void setLoadingIndicator(boolean active) {
+        if (mRefreshLayout.isFooterRefreshing())
+            mRefreshLayout.setFooterRefreshing(false);
+        mRefreshLayout.setHeaderRefreshing(true);
     }
 
     @Override
@@ -200,10 +210,8 @@ public class PostsFragment extends BaseFragment
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        String trim = query.trim();
-        mToolbar.setSubtitle(trim);
         mRefreshLayout.setHeaderRefreshing(true);
-        mPresenter.loadPosts(true, trim);
+        mPresenter.loadPosts(true, query.trim());
         return false;
     }
 

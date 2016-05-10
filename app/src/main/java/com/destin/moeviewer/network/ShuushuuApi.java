@@ -19,7 +19,7 @@
 package com.destin.moeviewer.network;
 
 import com.destin.moeviewer.model.shuushuu.ShuushuuPost;
-import com.destin.moeviewer.model.shuushuu.ShuushuuResult;
+import com.destin.moeviewer.model.shuushuu.ShuushuuList;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public interface ShuushuuApi {
      * @return wrapped list of post (maybe has the parameter {@param maxImageId} )
      */
     @GET("app/index.php")
-    Observable<ShuushuuResult> listPosts(@Query("page") int page, @Query("max_image_id") Integer maxImageId);
+    Observable<ShuushuuList> listPosts(@Query("page") int page, @Query("max_image_id") Integer maxImageId);
 
 
     /**

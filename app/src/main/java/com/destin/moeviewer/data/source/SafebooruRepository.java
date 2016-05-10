@@ -17,6 +17,7 @@
 package com.destin.moeviewer.data.source;
 
 import com.destin.moeviewer.data.Post;
+import com.destin.moeviewer.model.booru.BooruList;
 import com.destin.moeviewer.model.booru.BooruPost;
 import com.destin.moeviewer.network.BooruApi;
 import com.destin.moeviewer.util.MoeClient;
@@ -54,21 +55,23 @@ public class SafebooruRepository implements MoeDataSource {
     }
 
 
-    private final Func1<List<BooruPost>, List<Post>> toPostsFunc = booruPosts -> {
-        List<Post> list = new ArrayList<>(booruPosts.size());
-        for (BooruPost post : booruPosts) {
-            Post temp = new Post();
-            temp.setRatio((float) post.getPreviewHeight() / post.getPreviewWidth());
-            temp.setPreUrl(post.getPreviewUrl());
-            temp.setSampleUrl(post.getSampleUrl());
-            temp.setRawUrl(post.getFileUrl());
-            temp.setTagArray(StringUtils.split(post.getTags(), "\b"));
-            temp.setSource(post.getSource());
-            temp.setDesc("safebooru.org");
-            list.add(temp);
-        }
-        return list;
-    };
+    private final Func1<BooruList, List<Post>> toPostsFunc =
+            booruList -> {
+                List<BooruPost> booruPosts = booruList.getPosts();
+                List<Post> list = new ArrayList<>(booruPosts.size());
+                for (BooruPost post : booruPosts) {
+                    Post temp = new Post();
+                    temp.setRatio((float) post.getPreviewHeight() / post.getPreviewWidth());
+                    temp.setPreUrl(post.getPreviewUrl());
+                    temp.setSampleUrl(post.getSampleUrl());
+                    temp.setRawUrl(post.getFileUrl());
+                    temp.setTagArray(StringUtils.split(post.getTags(), "\b"));
+                    temp.setSource(post.getSource());
+                    temp.setDesc("safebooru.org");
+                    list.add(temp);
+                }
+                return list;
+            };
 
     @Override
     public Observable<List<Post>> getRecentPosts(int page) {

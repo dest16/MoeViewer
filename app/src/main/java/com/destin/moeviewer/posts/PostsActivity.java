@@ -24,8 +24,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.destin.moeviewer.R;
+import com.destin.moeviewer.data.source.DonmaiRepository;
+import com.destin.moeviewer.data.source.KonachanRepository;
+import com.destin.moeviewer.data.source.SafebooruRepository;
 import com.destin.moeviewer.data.source.ShuushuuRepository;
 import com.destin.moeviewer.data.source.YandeRepository;
+import com.destin.moeviewer.data.source.ZerochanRepository;
 import com.destin.sehaikun.AssertUtils;
 
 public class PostsActivity extends AppCompatActivity
@@ -53,7 +57,8 @@ public class PostsActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_root, postsFragment).commit();
         }
         // Create the presenter
-        mPostsPresenter = new PostsPresenter(postsFragment, ShuushuuRepository.getInstance());
+        setTitle(R.string.yande_menu_title);
+        mPostsPresenter = new PostsPresenter(postsFragment, YandeRepository.getInstance());
 //        // Load previously saved state, if available.
 //        if (savedInstanceState != null) {
 //            TasksFilterType currentFiltering =
@@ -83,18 +88,26 @@ public class PostsActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         setTitle(item.getTitle());
-
         switch (item.getItemId()) {
             case R.id.nav_yande:
                 mPostsPresenter.setProvider(YandeRepository.getInstance());
                 break;
             case R.id.nav_konachan:
+                mPostsPresenter.setProvider(KonachanRepository.getInstance());
                 break;
             case R.id.nav_donmai:
+                mPostsPresenter.setProvider(DonmaiRepository.getInstance());
                 break;
             case R.id.nav_safebooru:
+                mPostsPresenter.setProvider(SafebooruRepository.getInstance());
                 break;
             case R.id.nav_shuushuu:
+                mPostsPresenter.setProvider(ShuushuuRepository.getInstance());
+                break;
+            case R.id.nav_zerochan:
+                mPostsPresenter.setProvider(ZerochanRepository.getInstance());
+                break;
+            default:
                 break;
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);

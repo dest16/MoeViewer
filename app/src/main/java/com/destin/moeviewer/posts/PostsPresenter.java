@@ -47,12 +47,14 @@ public class PostsPresenter implements PostsContract.Presenter {
 
 
     @Override
-    public void loadPosts(final boolean refresh, @Nullable String tag) {
+    public void loadPosts(boolean refresh, @Nullable String tag) {
         unsubscription(mPostsSubscription);
+        mPostsView.showSubTitle(tag);
         if (StringUtils.isEmpty(tag)) {
             mPostsSubscription = mDataSource.getRecentPosts(refresh ? mPage = 0 : ++mPage)
                     .compose(SchedulersCompat.<List<Post>>applyIoSchedulers())
                     .doAfterTerminate(() -> mPostsView.completeLoadPosts(refresh))
+                    .doOnError(Throwable::printStackTrace)
                     .subscribe(posts -> {
                         mPostsView.showPosts(posts, refresh);
                     }, throwable -> {
@@ -92,7 +94,9 @@ public class PostsPresenter implements PostsContract.Presenter {
 
     @Override
     public void subscribe() {
-
+        mPostsView.showTitle();
+        mPostsView.setLoadingIndicator(true);
+        loadPosts(true, null);
     }
 
     @Override
