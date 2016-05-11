@@ -37,7 +37,7 @@ public interface MinitokyoApi {
      * @return raw html
      */
     @GET("http://gallery.minitokyo.net/scans")
-    Observable<String> listPosts(@Query("order") String order, @Query("time") int time, @Query("page") int page);
+    Observable<String> listPosts(@Query("order") String order, @Query("time") Integer time, @Query("page") int page);
 
     /**
      * meta tags return the list of it's children,children tag return the content (contains the cid)
@@ -48,7 +48,7 @@ public interface MinitokyoApi {
      * @return raw html
      */
     @GET("{tag}")
-    Observable<String> listTags(@Path("tag") String tag, @Query("order") String order, @Query("page") int page);
+    Observable<String> listTags(@Path("tag") String tag, @Query("order") String order, @Query("page") Integer page);
 
 
     /**
@@ -68,8 +68,7 @@ public interface MinitokyoApi {
      * @param page  the page number ,start with 1
      * @return raw html
      */
-    @GET("http://browse.minitokyo.net/index=3")
+    @GET("http://browse.minitokyo.net/gallery?index=3")
     Observable<String> showPosts(@Query("tid") String tid, @Query("order") String order, @Query("page") int page);
-
 
 }

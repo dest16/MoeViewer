@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import com.destin.moeviewer.R;
 import com.destin.moeviewer.data.source.DonmaiRepository;
 import com.destin.moeviewer.data.source.KonachanRepository;
+import com.destin.moeviewer.data.source.MinitokyoRepository;
 import com.destin.moeviewer.data.source.SafebooruRepository;
 import com.destin.moeviewer.data.source.ShuushuuRepository;
 import com.destin.moeviewer.data.source.YandeRepository;
@@ -106,6 +107,9 @@ public class PostsActivity extends AppCompatActivity
                 break;
             case R.id.nav_zerochan:
                 mPostsPresenter.setProvider(ZerochanRepository.getInstance());
+                break;
+            case R.id.nav_monitokyo:
+                mPostsPresenter.setProvider(MinitokyoRepository.getInstance());
                 break;
             default:
                 break;

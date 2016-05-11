@@ -48,10 +48,10 @@
             android:id="@+id/nav_zerochan"
             android:icon="@mipmap/ic_zerochan"
             android:title="@string/zerochan_menu_title"/>
-        <!--<item-->
-            <!--android:id="@+id/nav_monitokyo"-->
-            <!--android:icon="@mipmap/ic_minitokyo"-->
-            <!--android:title="@string/minitokyo_menu_title"/>-->
+        <item
+            android:id="@+id/nav_monitokyo"
+            android:icon="@mipmap/ic_minitokyo"
+            android:title="@string/minitokyo_menu_title" />
     </group>
 
     <item android:title="Communicate">
