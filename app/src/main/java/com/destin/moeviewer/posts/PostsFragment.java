@@ -21,21 +21,25 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.destin.moeviewer.BaseFragment;
 import com.destin.moeviewer.R;
-import com.destin.moeviewer.adapter.PostAdapter;
 import com.destin.moeviewer.data.Post;
 import com.destin.moeviewer.widget.MaterialSearchView;
+import com.destin.moeviewer.widget.StaggeredImageView;
 import com.destin.sehaikun.LayoutUtils;
 import com.destin.sehaikun.ResourceUtils;
 import com.destin.sehaikun.StringUtils;
 import com.hippo.easyrecyclerview.EasyRecyclerView;
 import com.hippo.easyrecyclerview.MarginItemDecoration;
 import com.hippo.refreshlayout.RefreshLayout;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -55,6 +59,8 @@ public class PostsFragment extends BaseFragment
     private PostAdapter mAdapter;
     private PostsContract.Presenter mPresenter;
     private PublishSubject<String> mSuggestSubject;
+
+    public List<Post> mList;
 
     @Override
     protected int layoutId() {
@@ -101,10 +107,7 @@ public class PostsFragment extends BaseFragment
                 .subscribe(s -> {
                     mPresenter.loadSuggestions(s);
                 });
-
         mPresenter.subscribe();
-//        mRefreshLayout.post(() -> mRefreshLayout.setHeaderRefreshing(true));
-//        mPresenter.loadPosts(true, getSearchText());
     }
 
     @Override
@@ -125,11 +128,12 @@ public class PostsFragment extends BaseFragment
     @Override
     public void showPosts(List<Post> posts, boolean refresh) {
         if (refresh) {
-            mAdapter.mList = posts;
+            mList.clear();
+            mList.addAll(posts);
             mAdapter.notifyDataSetChanged();
         } else {
-            mAdapter.mList.addAll(posts);
-            mAdapter.notifyItemRangeInserted(mAdapter.mList.size() - posts.size(), posts.size());
+            mList.addAll(posts);
+            mAdapter.notifyItemRangeInserted(mList.size() - posts.size(), posts.size());
         }
     }
 
@@ -236,4 +240,41 @@ public class PostsFragment extends BaseFragment
             }
         }
     };
+
+    private class PostAdapter extends RecyclerView.Adapter<PostHolder> {
+
+
+        @Override
+        public PostHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid_post, parent, false);
+            return new PostHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(PostHolder holder, int position) {
+            Post post = mList.get(position);
+            holder.image.setRatio(post.getRatio());
+            holder.desc.setText(post.getDesc());
+            Picasso.with(holder.itemView.getContext()).load(mList.get(position).getPreUrl()).into(holder.image);
+        }
+
+        @Override
+        public int getItemCount() {
+            if (mList == null)
+                return 0;
+            return mList.size();
+        }
+
+    }
+
+    private class PostHolder extends RecyclerView.ViewHolder {
+        StaggeredImageView image;
+        TextView desc;
+
+        public PostHolder(View itemView) {
+            super(itemView);
+            image = (StaggeredImageView) itemView.findViewById(R.id.image_item_grid);
+            desc = (TextView) itemView.findViewById(R.id.desc_item_grid);
+        }
+    }
 }

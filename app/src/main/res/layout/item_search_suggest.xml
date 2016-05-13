@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016 dest16
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +14,7 @@
   ~ limitations under the License.
   -->
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize">
@@ -30,7 +28,7 @@
         android:paddingLeft="@dimen/search_view_text_padding"
         android:paddingRight="@dimen/search_view_text_padding"
         android:textColor="#727272"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
     <ImageView
         android:id="@+id/suggestion_icon"
@@ -41,5 +39,5 @@
         android:focusable="false"
         android:paddingLeft="@dimen/search_icon_padding"
         android:paddingRight="@dimen/search_icon_padding"
-        app:srcCompat="@drawable/ic_suggest"/>
+        app:srcCompat="@drawable/ic_suggest" />
 </RelativeLayout>

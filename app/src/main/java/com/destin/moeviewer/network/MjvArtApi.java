@@ -18,7 +18,7 @@
 
 package com.destin.moeviewer.network;
 
-import com.destin.moeviewer.model.mjvart.MjvArtPost;
+import com.destin.moeviewer.model.mjvart.MjvArtList;
 import com.destin.moeviewer.model.mjvart.MjvArtTag;
 
 import java.util.List;
@@ -50,9 +50,9 @@ public interface MjvArtApi {
      * @return list of post
      */
     @GET("pictures/view_posts/{page}?lang=en&type=json")
-    Observable<List<MjvArtPost>> listPosts(
+    Observable<MjvArtList> listPosts(
             @Path("page") int page, @Query("posts_per_page") int postsPerPage, @Query("search_tag") String searchTag,
-            @Query("denied_tags") String deniedTags, @Query("order_by") String orderBy, @Query("ldate") int ldate,
+            @Query("denied_tags") String deniedTags, @Query("order_by") String orderBy, @Query("ldate") Integer ldate,
             @Query("ext_jpg") String extJpg, @Query("ext_png") String extPng, @Query("ext_gif") String extGif);
 
     /**

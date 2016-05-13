@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016 dest16
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +14,16 @@
   ~ limitations under the License.
   -->
 
-<com.hippo.refreshlayout.RefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.hippo.refreshlayout.RefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <com.hippo.easyrecyclerview.EasyRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:padding="@dimen/recycler_view_padding" />
 </com.hippo.refreshlayout.RefreshLayout>

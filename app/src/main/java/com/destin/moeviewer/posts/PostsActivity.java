@@ -51,11 +51,11 @@ public class PostsActivity extends AppCompatActivity
         navigationView.setItemIconTintList(null);
 
 
-        PostsFragment postsFragment = (PostsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_root);
+        PostsFragment postsFragment = (PostsFragment) getSupportFragmentManager().findFragmentById(R.id.frag_posts);
 
         if (postsFragment == null) {
             postsFragment = new PostsFragment();
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_root, postsFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.frag_posts, postsFragment).commit();
         }
         // Create the presenter
         setTitle(R.string.yande_menu_title);
