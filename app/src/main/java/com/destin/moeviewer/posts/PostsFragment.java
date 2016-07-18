@@ -41,6 +41,7 @@ import com.hippo.easyrecyclerview.MarginItemDecoration;
 import com.hippo.refreshlayout.RefreshLayout;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -60,7 +61,7 @@ public class PostsFragment extends BaseFragment
     private PostsContract.Presenter mPresenter;
     private PublishSubject<String> mSuggestSubject;
 
-    public List<Post> mList;
+    public List<Post> mList = new ArrayList<>();
 
     @Override
     protected int layoutId() {
@@ -128,6 +129,7 @@ public class PostsFragment extends BaseFragment
     @Override
     public void showPosts(List<Post> posts, boolean refresh) {
         if (refresh) {
+            mRecyclerView.scrollToPosition(0);
             mList.clear();
             mList.addAll(posts);
             mAdapter.notifyDataSetChanged();

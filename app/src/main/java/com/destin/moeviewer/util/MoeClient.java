@@ -16,9 +16,8 @@
 
 package com.destin.moeviewer.util;
 
-import com.destin.moeviewer.network.LogInterceptor;
-
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 public class MoeClient {
     private static OkHttpClient sOkHttpClient;
@@ -31,6 +30,6 @@ public class MoeClient {
 
 
     private static void initClient() {
-        sOkHttpClient = new OkHttpClient.Builder().addInterceptor(new LogInterceptor()).build();
+        sOkHttpClient = new OkHttpClient.Builder().addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)).build();
     }
 }
